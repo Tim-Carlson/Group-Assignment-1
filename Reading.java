@@ -4,7 +4,7 @@ package contents;
 public class Reading {
 
 	
-	private int reading_date;
+	private long reading_date;
 	private double reading_value;
 	private String reading_id;
 	private String reading_type;
@@ -17,11 +17,11 @@ public class Reading {
 		
 	}
 
-	public int getReading_date() {
+	public long getReading_date() {
 		return reading_date;
 	}
 
-	public void setReading_date(int reading_date) {
+	public void setReading_date(long reading_date) {
 		this.reading_date = reading_date;
 	}
 
@@ -43,6 +43,12 @@ public class Reading {
 
 	public String getReading_type() {
 		return reading_type;
+	}
+
+	@Override
+	public String toString() {
+		return "reading_type=" + reading_type + "\nreading_value=" + reading_value + "\nreading_id="
+				+ reading_id + "\nreading_date=" + reading_date + "\n";
 	}
 
 

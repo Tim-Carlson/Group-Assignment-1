@@ -109,7 +109,7 @@ public class Gui extends JFrame implements ActionListener{
 		if (event.equals("Import")) {
 			file.readFile(fileAddress.getText());
 		} else if (event.equals("Find")) {
-			
+			siteOutput.setText(file.displaySite(siteId.getText()));
 		} else if (event.equals("Open")) {
 			
 		} else if (event.equals("Close")) {

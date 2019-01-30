@@ -14,6 +14,12 @@ public class FileOperator {
 	
 	private JSONParser parser;
 	private ArrayList<Site> siteList;
+	private Site sitePlaceholder;
+	private int siteId; 
+	private long readingDate;
+	private double readingValue;
+	private String readingId;
+	private String readingType;
 	
 	public FileOperator() {
 		parser = new JSONParser();
@@ -22,9 +28,9 @@ public class FileOperator {
 
 	
 	public void readFile(String location) {
-		Site sitePlaceholder;
+		
 		int siteId, prevSiteId; 
-		int readingDate;
+		long readingDate;
 		double readingValue;
 		String readingId;
 		String readingType;
@@ -32,17 +38,11 @@ public class FileOperator {
 			
 			//"/Users/Ryan/Desktop/example.json"
 			//added location of Ryan's example.json file for hardcoding
-			Object obj = parser.parse(new FileReader("/Users/Ryan/Desktop/example.json"));
+			Object obj = parser.parse(new FileReader(location));
 			JSONObject jObj = (JSONObject) obj;
 			
 			JSONArray siteArray = (JSONArray) jObj.get("site_readings");
 			Iterator<String> siteScan = siteArray.iterator();
-			
-			
-			
-			
-			
-			
 			
 			
 			while(siteScan.hasNext()) {
@@ -50,16 +50,25 @@ public class FileOperator {
 				Object readings = siteScan.next();
 				JSONObject jReadings = (JSONObject) readings;
 				
-				siteId = (int) jReadings.get("site_id");
-				readingId = (String) jReadings.get("reading_id");
-				readingType = (String) jReadings.get("reading_type");
-				readingValue = (double) jReadings.get("reading_value");
-				readingDate = (int) jReadings.get("reading_date");
-				System.out.println(siteId + readingId + readingType + readingValue + readingDate);
-				sitePlaceholder = findSite(siteId);
+				siteId = Integer.parseInt(String.valueOf(jReadings.get("site_id")));//this portion converts json readings into local variables - in the most messy way possible
+				readingDate = Long.parseLong(String.valueOf(jReadings.get("reading_date")));
+				readingId = String.valueOf(jReadings.get("reading_id"));
+				readingType = String.valueOf(jReadings.get("reading_type"));
+				readingValue = Double.valueOf(String.valueOf(jReadings.get("reading_value")));
+				
+				sitePlaceholder = findOrMakeSite(siteId);
+				
+				if(readingType.equals("humidity")) {
+					sitePlaceholder.setHumidity(readingDate, readingValue, readingId);
+				} else if(readingType.equals("particulate")) {
+					sitePlaceholder.setParticulate(readingDate, readingValue, readingId);
+				} else if(readingType.equals("temp")) {
+					sitePlaceholder.setTemperature(readingDate, readingValue, readingId);
+				} else if(readingType.equals("bar_press")) {
+					sitePlaceholder.setBarometric(readingDate, readingValue, readingId);
+				}
 				
 				
-				  
 				  
 			}
 			
@@ -73,25 +82,41 @@ public class FileOperator {
 			e.printStackTrace();
 		}
 		
-	    
 	}
 	
-	private Site findSite(int siteId) {//This returns a site with a matching site id, regardless of it previously existing
+	private Site findOrMakeSite(int siteId) {//This returns a site with a matching site id, regardless of it previously existing
 		
 		int size = siteList.size();
-		
-		for(int i = 0; i<size; i++) {
+		for(int i = 0; i < size; i++) {
 			if(siteId == siteList.get(i).getSite_id())
 				return siteList.get(i);	
+			
 		}
 		
-		return new Site(siteId);
+		Site newSite = new Site(siteId);
+		siteList.add(newSite);
+		return newSite;
 	}
 	
+	public String displaySite(String siteString) {
+		
+		int siteId = Integer.parseInt(siteString);
+		int size = siteList.size();
+		for(int i = 0; i < size; i++) {
+			if(siteId == siteList.get(i).getSite_id())
+				return siteList.get(i).toString();	
+			
+		}
+		
+		return null;
+	}
 	
 	public static void main(String[] args) {
 		Gui gui = new Gui();
 		gui.setVisible(true);
 		
 	}
+
+
+	
 }
