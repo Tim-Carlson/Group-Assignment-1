@@ -1,28 +1,24 @@
 package contents;
 
+import java.util.ArrayList;
+
 public class Site {
+	private String site_id;  // id should be a String data type because we don't use for computational reason
+	private boolean collection_open;
+	private  ArrayList<Reading> readings;
 
-	
-	private int site_id; //decided to add site_id to the site object, seemed like a good idea
-	private boolean collection_open; //made default of == true
-	private Reading humidity, temperature, barometric, particulate;
-	
-	
-	
-	public Site(int site_id) {//site class auto-creates four reading classes, assigns them reading_type
-		this.site_id = site_id;
-		this.collection_open = true;
-		
-		this.humidity = new Reading("humidity");
-		this.temperature = new Reading("temp");
-		this.barometric = new Reading("bar_press");
-		this.particulate = new Reading("particulate");
-		
+	//The constructor will initialize instance object
+	//by assigning site_id and will make new readings Arraylist.
+	public Site(String siteID) {
+		this.site_id = siteID;
+		readings = new ArrayList<Reading>();
+
 	}
+	
+	//The getters and setters methods
 
-
-	public int getSite_id() {
-		return site_id;
+	public String getSite_id() {
+		return this.site_id;
 	}
 
 
@@ -33,63 +29,45 @@ public class Site {
 	public void closeCollection() {
 		this.collection_open = false;
 	}
-	
+
 	public void openCollection() {
 		this.collection_open = true;
 	}
 
-	public Reading getHumidity() {
-		return humidity;
+	public Reading getReadings(String readingID) {
+		Reading output = null;
+		for(Reading i: readings) {
+			if(i.getReading_id().equals(readingID)) {
+				output = i;
+			}
+		}
+		return output;
 	}
 
-	public void setHumidity(long reading_date, double reading_value, String reading_id) {
-		humidity.setReading_date(reading_date);
-		humidity.setReading_value(reading_value);
-		humidity.setReading_id(reading_id);	
-	}
-
-	public Reading getTemperature() {
-		return temperature;
-	}
-	
-	public void setTemperature(long reading_date, double reading_value, String reading_id) {
-		temperature.setReading_date(reading_date);
-		temperature.setReading_value(reading_value);
-		temperature.setReading_id(reading_id);	
-	}
-
-	public Reading getBarometric() {
-		return barometric;
-	}
-
-	public void setBarometric(long reading_date, double reading_value, String reading_id) {
-		barometric.setReading_date(reading_date);
-		barometric.setReading_value(reading_value);
-		barometric.setReading_id(reading_id);	
-	}
-	
-	public Reading getParticulate() {
-		return particulate;
-	}
-
-	public void setParticulate(long reading_date, double reading_value, String reading_id) {
-		particulate.setReading_date(reading_date);
-		particulate.setReading_value(reading_value);
-		particulate.setReading_id(reading_id);	
+	public void addReading(Reading reading) {
+		readings.add(reading);
 	}
 
 
 	@Override
-	public String toString() {
-		String openClose;
-		if(collection_open) { openClose = "Open";}
-		else { openClose = "Closed";}
-		
-		return "Site_readings for site_id:" + site_id + "\n\n" + humidity.toString() + "\n" + 
-	particulate.toString() + "\n" + temperature.toString() + "\n" + barometric.toString() + "Site Collection is: " 
-	+ openClose;
+	public boolean equals(Object obj) {
+		boolean result = false;
+		if(obj instanceof Site) {
+			if(((Site) obj).getSite_id().equals(site_id)) {
+			result = true;
+		}
+		}
+		return result;
 	}
-	
-	
-	
+
+	@Override
+	public String toString() {
+		String output= "";
+		for(int i = 0; i< readings.size(); i++) {
+			output = output + readings.get(i) + "\n";
+
+		}
+
+		return output;
+}
 }
