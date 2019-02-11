@@ -3,7 +3,7 @@ package contents;
 import java.util.ArrayList;
 
 public class Site {
-	private String site_id;  // id is string data type because we don't use for computational reason
+	private String site_id;  // id should be a String data type because we don't use for computational reason
 	private boolean collection_open;
 	private  ArrayList<Reading> readings;
 
