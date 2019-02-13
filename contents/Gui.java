@@ -21,6 +21,7 @@ public class Gui extends JFrame implements ActionListener{
 	
 	private JButton findAddress;
 	private JButton findId;
+	
 	private JButton open;
 	private JButton close;
 
@@ -48,6 +49,7 @@ public class Gui extends JFrame implements ActionListener{
 		
 		findAddress = new JButton("Import");
 		findId = new JButton("Find");
+		
 		open = new JButton("Open");
 		close = new JButton("Close");
 
@@ -73,6 +75,7 @@ public class Gui extends JFrame implements ActionListener{
 		viewCard.add(idLabel);
 		viewCard.add(siteId);
 		viewCard.add(findId);
+		
 		viewCard.add(siteOutput);
 		viewCard.add(collectionLabel);
 		viewCard.add(open);
@@ -111,11 +114,11 @@ public class Gui extends JFrame implements ActionListener{
 		} else if (event.equals("Find")) {
 			siteOutput.setText(file.displaySite(siteId.getText()));
 		} else if (event.equals("Open")) {
-			
+			System.out.println("Needs to be linked with function");
 		} else if (event.equals("Close")) {
-			
-		} else {
-			System.out.println("That shouldn't happen");
+			System.out.println("Needs to be linked with function");
+		} else if (event.equals("Output")){
+			System.out.println("Needs to be linked with function");
 		}
 	}
 

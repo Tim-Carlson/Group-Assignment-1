@@ -3,25 +3,26 @@ package contents;
 
 public class Reading {
 
-
-	private String reading_date; // we could just us String type for date too.
 	private double reading_value;
+	private String reading_date;//This is OK being a String for now
 	private String reading_id;
 	private String reading_type;
-
-	public Reading(String reading_type, String reading_id) {
-		this.reading_date = 0;
-		this.reading_value = 0;
+	
+	public Reading(double reading_value, String reading_date, String reading_id, String reading_type) {
+		this.reading_value = reading_value;
+		this.reading_date = reading_date;
 		this.reading_id = reading_id;
 		this.reading_type = reading_type;
-
+		
 	}
 
+	//Most of these getter/setter classes shouldn't be used because we are using the constructor to set data,
+	//and using the tostring method to display
 	public String getReading_date() {
 		return reading_date;
 	}
 
-	public void setReading_date(long reading_date) {
+	public void setReading_date(String reading_date) {
 		this.reading_date = reading_date;
 	}
 
@@ -46,23 +47,11 @@ public class Reading {
 	}
 
 	@Override
-public boolean equals(Object obj) {
-	boolean result = false;
-	if(obj instanceof Reading) {
-		if(((Reading) obj).getReading_id().equals(reading_id)) {
-			result = true;
-		}
-	}
-
-	return result;
-}
-
-	@Override
 	public String toString() {
-		return "reading_type = " + reading_type + "\nreading_value = " + reading_value + "\nreading_id = "
-				+ reading_id + "\nreading_date = " + reading_date + "\n";
+		return "reading_type=" + reading_type + "\nreading_value=" + reading_value + "\nreading_id="
+				+ reading_id + "\nreading_date=" + reading_date + "\n";
 	}
 
 
-
+	
 }
