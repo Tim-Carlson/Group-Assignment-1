@@ -7,11 +7,14 @@ import java.io.File;
 import javax.swing.*;
 
 /*	TODO:
- * 		Add functionality for open/close
- * 
- * 		Add functionality to writer panel
+ * 		Add file writing functionality to writer panel
+ *
+ *		Add functionality to create readings in writer panel
  * 
  * 	RECENTLY ADDED:
+ *		Added open/close functionality with Gui.java and FileOperator.java
+ *		Open and closed still don't do anything.
+ *
  * 		Added a file chooser.
  * 
  * 		Added input validation for file IO.
@@ -19,7 +22,6 @@ import javax.swing.*;
  * 		Added error boxes if bad file paths are imported.
  * 
  * 		Added a main function to Gui.java 
- * 		***Doesn't need to be the entry point, but it works for now***
  */
 
 @SuppressWarnings("serial")
@@ -187,7 +189,8 @@ public class Gui extends JFrame implements ActionListener{
 	
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		String event = e.getActionCommand();		
+		String event = e.getActionCommand();
+		String buf;
 		
 		if (event.equals("Import")) {
 			// Display an error if the file is bad, else open a file.
@@ -197,16 +200,14 @@ public class Gui extends JFrame implements ActionListener{
 					"Whoops!", JOptionPane.ERROR_MESSAGE);
 			
 		} else if (event.equals("Find")) {
-			// Display an error if the file is bad, else read from file.
-			if (validateInput(siteId.getText()))
+			// Display an error if the site is null, else display site info.
+			if (siteId.getText() != null)
 				siteOutput.setText(file.displaySite(siteId.getText()));
-			else JOptionPane.showMessageDialog(this, "Invalid file!", 
+			else JOptionPane.showMessageDialog(this, "Invalid site!", 
 					"Whoops!", JOptionPane.ERROR_MESSAGE);
 			
 		} else if (event.equals("Choose File")) {
-			// Choose a file through a dialogue to limit user error selecting files.
-			String buf;
-			
+			// Choose a file through a dialogue to limit user error selecting files.			
 			// Avoid a null pointer exception by checking whether a file was actually chosen.
 			if (fchDialogue.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
 				buf = fchDialogue.getSelectedFile().getAbsolutePath();
@@ -214,16 +215,28 @@ public class Gui extends JFrame implements ActionListener{
 			}
 			
 		} else if (event.equals("Open")) {
-			System.out.println("Needs to be linked with function");
+			// Open all sites by an ID silently
+			buf = siteId.getText();
+			if (buf != null)
+				file.setSiteOpen(Integer.parseInt(buf));
 			
 		} else if (event.equals("Close")) {
-			System.out.println("Needs to be linked with function");
+			// Close all sites by an ID silently
+			buf = siteId.getText();
+			if (buf != null)
+				file.setSiteClose(Integer.parseInt(buf));
 			
 		} else if (event.equals("Output")){
-			System.out.println("Needs to be linked with function");
+			buf = siteId.getText();
+			if (buf != null)
+				siteOutput.setText(file.displaySite(buf));
 			
 		} else if (event.equals("Choose Write File")) {
-			System.out.println("Not yet implemented.");
+			// Allow specifying a file to write by graphical dialogue
+			if (fchDialogue.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
+				buf = fchDialogue.getSelectedFile().getAbsolutePath();
+				writeFileAddress.setText(buf);
+			}
 
 		} else if (event.equals("Export")) {
 			System.out.println("Not yet implemented.");

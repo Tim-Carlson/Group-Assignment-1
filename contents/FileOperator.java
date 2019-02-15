@@ -84,6 +84,24 @@ public class FileOperator {
 		return newSite;
 	}
 	
+	// Sets site to open.
+	public void setSiteOpen(int siteId) {
+		int size = siteList.size();
+		for(int i = 0; i < size; i++) {
+			if(siteId == siteList.get(i).getSite_id())
+				 siteList.get(i).openCollection();	
+		}
+	}
+	
+	// Sets site to close.
+	public void setSiteClose(int siteId) {
+		int size = siteList.size();
+		for(int i = 0; i < size; i++) {
+			if(siteId == siteList.get(i).getSite_id())
+				 siteList.get(i).closeCollection();	
+		}
+	}
+		
 	public String displaySite(String siteString) {
 		
 		int siteId = Integer.parseInt(siteString);
@@ -97,13 +115,4 @@ public class FileOperator {
 		
 		return null;
 	}
-	
-	public static void main(String[] args) {
-		Gui gui = new Gui();
-		gui.setVisible(true);
-		
-	}
-
-
-	
 }
