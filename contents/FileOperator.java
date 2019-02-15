@@ -8,8 +8,6 @@ import java.util.Iterator;
 import org.json.simple.*;
 import org.json.simple.parser.*;
 
-
-
 public class FileOperator {
 	
 	private JSONParser parser;
@@ -27,6 +25,34 @@ public class FileOperator {
 		siteList = new ArrayList<Site>();
 	}
 
+	// Return true if the JSON file could be written.
+	public boolean writeFile(String location) {
+		boolean ret = false;
+		String sbuf = "";
+		Reading rbuf;
+		
+		JSONObject site;
+		JSONObject readings[];
+		
+		for (int i = 0; i < siteList.size(); i++)
+		{
+			site = new JSONObject();
+			site.put("site_id", siteList.get(i).getSite_id());
+			readings = new JSONObject[siteList.get(i).size()];
+			for (int j = 0; j < readings.length; j++) {
+				rbuf = siteList.get(i).getReading(j);
+				readings[j] = new JSONObject();
+				readings[j].put("reading_id", rbuf.getReading_id());
+				readings[j].put("reading_type", rbuf.getReading_type());
+				readings[j].put("reading_date", rbuf.getReading_date());
+				readings[j].put("reading_value", rbuf.getReading_value());
+				
+				site.put("reading_" + (j + 1), readings[j]);
+			}
+		}
+		
+		return ret;
+	}
 	
 	public void readFile(String location) {
 		
