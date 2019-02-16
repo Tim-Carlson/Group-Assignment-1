@@ -3,7 +3,6 @@ package contents;
 import java.io.*;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 
 import org.json.simple.*;
@@ -63,6 +62,7 @@ public class FileOperator {
 			PrintWriter pw = new PrintWriter(f);
 			pw.write(sbuf);
 			pw.flush();
+			pw.close();
 		} catch (Exception e) {
 			ret = false;
 			System.out.println("File error in File Operator.");
@@ -143,6 +143,14 @@ public class FileOperator {
 			if(siteId == siteList.get(i).getSite_id())
 				 siteList.get(i).closeCollection();	
 		}
+	}
+	
+	// Will add a Reading to the specified site.
+	public void addEntry(int site, String id, String key, double val, long date) {
+		Site buf = findOrMakeSite(site);
+		if (buf.isCollection_open())
+			buf.addReading(val, "" + date, id, key);
+		else System.out.println("Site " + buf.getSite_id() + " is closed.");
 	}
 		
 	public String displaySite(String siteString) {
