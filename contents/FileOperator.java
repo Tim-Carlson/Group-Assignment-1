@@ -58,6 +58,7 @@ public class FileOperator {
 		sbuf = report.toJSONString();
 		
 		try {
+			f.getParentFile().mkdirs();
 			f.createNewFile();
 			PrintWriter pw = new PrintWriter(f);
 			pw.write(sbuf);

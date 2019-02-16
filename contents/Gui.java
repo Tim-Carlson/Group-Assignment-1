@@ -6,24 +6,6 @@ import java.io.File;
 
 import javax.swing.*;
 
-/*	TODO:
- * 		Add file writing functionality to writer panel
- *
- *		Add functionality to create readings in writer panel
- * 
- * 	RECENTLY ADDED:
- *		Added open/close functionality with Gui.java and FileOperator.java
- *		Open and closed still don't do anything.
- *
- * 		Added a file chooser.
- * 
- * 		Added input validation for file IO.
- * 		Applied input validation to button handling.
- * 		Added error boxes if bad file paths are imported.
- * 
- * 		Added a main function to Gui.java 
- */
-
 @SuppressWarnings("serial")
 public class Gui extends JFrame implements ActionListener{
 	
@@ -155,13 +137,15 @@ public class Gui extends JFrame implements ActionListener{
 		btnWriteFC.addActionListener(this);
 	}
 	
-	// Will return true if file given is accessible and has .json extension.
+	// Will return true if file given is accessible and has a legal extension.
 	private boolean validateInput(File file) {
 		boolean ret = false;
 		String buf;
 		
-		buf = file.getAbsolutePath().substring(5);
+		buf = file.getAbsolutePath();
+		buf = buf.substring(buf.length() - 5);
 		
+		System.out.println(buf);
 		if ((buf.compareToIgnoreCase(FEXT) == 0) && (file.exists())) {
 			ret = true;
 		}
@@ -169,7 +153,7 @@ public class Gui extends JFrame implements ActionListener{
 		return ret;
 	}
 	
-	// True if file is accessible and has .json extension.
+	// True if file is accessible and has a legal extension.
 	private boolean validateInput(String file) {
 		return validateInput(new File(file));
 	}
@@ -196,12 +180,12 @@ public class Gui extends JFrame implements ActionListener{
 			// Display an error if the file is bad, else open a file.
 			if (validateInput(fileAddress.getText()))
 				file.readFile(fileAddress.getText());
-			else JOptionPane.showMessageDialog(this, "File either doesn't exist or isn't a .JSON file!", 
+			else JOptionPane.showMessageDialog(this, "File either doesn't exist or isn't a " + FEXT +" file!", 
 					"Whoops!", JOptionPane.ERROR_MESSAGE);
 			
 		} else if (event.equals("Find")) {
 			// Display an error if the site is null, else display site info.
-			if (siteId.getText() != null)
+			if (!siteId.getText().isEmpty())
 				siteOutput.setText(file.displaySite(siteId.getText()));
 			else JOptionPane.showMessageDialog(this, "Invalid site!", 
 					"Whoops!", JOptionPane.ERROR_MESSAGE);
@@ -217,13 +201,13 @@ public class Gui extends JFrame implements ActionListener{
 		} else if (event.equals("Open")) {
 			// Open all sites by an ID silently
 			buf = siteId.getText();
-			if (buf != null)
+			if (!buf.isEmpty())
 				file.setSiteOpen(Integer.parseInt(buf));
 			
 		} else if (event.equals("Close")) {
 			// Close all sites by an ID silently
 			buf = siteId.getText();
-			if (buf != null)
+			if (!buf.isEmpty())
 				file.setSiteClose(Integer.parseInt(buf));
 			
 		} else if (event.equals("Output")){
