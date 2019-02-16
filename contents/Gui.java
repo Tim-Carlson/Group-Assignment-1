@@ -239,7 +239,16 @@ public class Gui extends JFrame implements ActionListener{
 			}
 
 		} else if (event.equals("Export")) {
-			System.out.println("Not yet implemented.");
+			// Print out a file if the address is valid. Inform the user of results with a message.
+			buf = writeFileAddress.getText();
+			if (validateInput(buf)) {
+				if(file.writeFile(buf)) JOptionPane.showMessageDialog(this, "File written successfully.", 
+						"Success!", JOptionPane.INFORMATION_MESSAGE);
+				else JOptionPane.showMessageDialog(this, "File was not written successfully.", 
+						"Whoops!", JOptionPane.ERROR_MESSAGE);
+			}
+			else JOptionPane.showMessageDialog(this, "File was invalid. Did you use the " + FEXT + " extension?", 
+					"Whoops!", JOptionPane.ERROR_MESSAGE);
 
 		}
 	}
