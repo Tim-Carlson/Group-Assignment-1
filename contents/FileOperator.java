@@ -3,6 +3,7 @@ package contents;
 import java.io.*;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 
 import org.json.simple.*;
@@ -27,28 +28,43 @@ public class FileOperator {
 
 	// Return true if the JSON file could be written.
 	public boolean writeFile(String location) {
-		boolean ret = false;
+		boolean ret = true;
 		String sbuf = "";
+		File f = new File(location);
+
+		JSONObject jbuf;
 		Reading rbuf;
 		
-		JSONObject site;
-		JSONObject readings[];
+		int numReadings = 0;
 		
-		for (int i = 0; i < siteList.size(); i++)
-		{
-			site = new JSONObject();
-			site.put("site_id", siteList.get(i).getSite_id());
-			readings = new JSONObject[siteList.get(i).size()];
-			for (int j = 0; j < readings.length; j++) {
+		JSONObject report = new JSONObject();
+		JSONArray siteReadings = new JSONArray();
+		
+		for (int i = 0; i < siteList.size(); i++) {
+			for (int j = 0; j < siteList.get(i).size(); j++) {
+				siteReadings.add(new JSONObject());
+				jbuf = ((JSONObject) siteReadings.get(numReadings));
 				rbuf = siteList.get(i).getReading(j);
-				readings[j] = new JSONObject();
-				readings[j].put("reading_id", rbuf.getReading_id());
-				readings[j].put("reading_type", rbuf.getReading_type());
-				readings[j].put("reading_date", rbuf.getReading_date());
-				readings[j].put("reading_value", rbuf.getReading_value());
-				
-				site.put("reading_" + (j + 1), readings[j]);
+				jbuf.put("site_id", siteList.get(i).getSite_id());
+				jbuf.put("reading_id", rbuf.getReading_id());
+				jbuf.put("reading_date", rbuf.getReading_date());
+				jbuf.put("reading_type", rbuf.getReading_type());
+				jbuf.put("reading_value", rbuf.getReading_value());
+				numReadings ++;
 			}
+		}
+		
+		report.put("site_readings", siteReadings);
+		sbuf = report.toJSONString();
+		
+		try {
+			f.createNewFile();
+			PrintWriter pw = new PrintWriter(f);
+			pw.write(sbuf);
+			pw.flush();
+		} catch (Exception e) {
+			ret = false;
+			System.out.println("File error in File Operator.");
 		}
 		
 		return ret;
