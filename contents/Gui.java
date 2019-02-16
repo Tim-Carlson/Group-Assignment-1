@@ -1,26 +1,12 @@
 package contents;
 
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
-
+import java.text.DecimalFormat;
 import javax.swing.*;
-
-/*	TODO:
- * 		Add functionality for open/close
- * 
- * 		Add functionality to writer panel
- * 
- * 	RECENTLY ADDED:
- * 		Added a file chooser.
- * 
- * 		Added input validation for file IO.
- * 		Applied input validation to button handling.
- * 		Added error boxes if bad file paths are imported.
- * 
- * 		Added a main function to Gui.java 
- * 		***Doesn't need to be the entry point, but it works for now***
- */
+import javax.swing.text.NumberFormatter;
 
 @SuppressWarnings("serial")
 public class Gui extends JFrame implements ActionListener{
@@ -47,11 +33,12 @@ public class Gui extends JFrame implements ActionListener{
 	private JLabel idLabel;
 	
 	// Resources for the writeCard JPanel.
-	private JPanel writeCard;
+	private JPanel writeCard, veryBottomWrite, subWriteBtm, subWriteMid, subWriteTop;
 	private JLabel writeAddressLabel;
-	private JTextArea writeFileAddress;
-	private JButton btnWriteFC;
-	private JButton btnExport;
+	private JComboBox<String> cmbKey;
+	private JTextArea txtWriteFileAddress, txtId;
+	private JFormattedTextField txtMeasurement, txtSite;
+	private JButton btnWriteFC, btnExport, btnAddAttribute;
 	
 	private JFileChooser fchDialogue;
 	
@@ -62,7 +49,6 @@ public class Gui extends JFrame implements ActionListener{
 	public static void main(String args[]) {
 		Gui gui = new Gui();
 		gui.setVisible(true);
-		System.out.println("Exiting!");
 	}
 	
 	public Gui(){
@@ -93,9 +79,10 @@ public class Gui extends JFrame implements ActionListener{
 		close = new JButton("Close");
 		
 		writeAddressLabel = new JLabel("File to Write:");
-		writeFileAddress = new JTextArea(1,20);
+		txtWriteFileAddress = new JTextArea(1,20);
 		btnWriteFC = new JButton("Choose Write File");
 		btnExport = new JButton("Export");
+		btnAddAttribute = new JButton("Add Entry");
 
 		collectionLabel = new JLabel("Site Collection:");
 		readAddressLabel = new JLabel("Enter File Address:");
@@ -107,6 +94,22 @@ public class Gui extends JFrame implements ActionListener{
 		
 		// Set fchDialogue to use the working directory.
 		fchDialogue.setCurrentDirectory(new File("."));
+		
+		String buf[] = {"humidity", "particulate", "temp", "bar_press"};
+		cmbKey = new JComboBox<String>(buf);
+		
+		txtMeasurement = new JFormattedTextField(new NumberFormatter(new DecimalFormat("########.####")));
+		txtSite = new JFormattedTextField(new NumberFormatter(new DecimalFormat("######")));
+		txtId = new JTextArea(1,20);
+		
+		subWriteBtm = new JPanel();
+		subWriteMid = new JPanel();
+		subWriteTop = new JPanel();
+		subWriteBtm.setLayout(new GridLayout(2,1));
+		veryBottomWrite = new JPanel();
+		writeCard.setLayout(new GridLayout(3,1));
+		veryBottomWrite.setLayout(new GridLayout(5,2));
+		
 	}
 	private void setupWindow() {
 		
@@ -125,11 +128,6 @@ public class Gui extends JFrame implements ActionListener{
 		readCard.add(btnReadFC);
 		readCard.add(findAddress);
 		
-		writeCard.add(writeAddressLabel);
-		writeCard.add(writeFileAddress);
-		writeCard.add(btnWriteFC);
-		writeCard.add(btnExport);
-		
 		viewCard.add(idLabel);
 		viewCard.add(siteId);
 		viewCard.add(findId);
@@ -139,6 +137,25 @@ public class Gui extends JFrame implements ActionListener{
 		viewCard.add(open);
 		viewCard.add(close);
 		
+		veryBottomWrite.add(new JLabel("Reading ID: "));
+		veryBottomWrite.add(txtId);
+		veryBottomWrite.add(new JLabel("Type: "));
+		veryBottomWrite.add(cmbKey);
+		veryBottomWrite.add(new JLabel("Site: "));
+		veryBottomWrite.add(txtSite);
+		veryBottomWrite.add(new JLabel("Measurement:"));
+		veryBottomWrite.add(txtMeasurement);
+		veryBottomWrite.add(new JLabel());
+		veryBottomWrite.add(btnAddAttribute);
+		subWriteBtm.add(new JLabel());
+		subWriteBtm.add(veryBottomWrite);
+		subWriteTop.add(writeAddressLabel);
+		subWriteTop.add(txtWriteFileAddress);
+		subWriteTop.add(btnWriteFC);
+		subWriteTop.add(btnExport);
+		writeCard.add(subWriteTop);
+		writeCard.add(subWriteMid);
+		writeCard.add(subWriteBtm);
 		
 		siteOutput.setEditable(false);
 	}
@@ -151,15 +168,18 @@ public class Gui extends JFrame implements ActionListener{
 		close.addActionListener(this);
 		btnExport.addActionListener(this);
 		btnWriteFC.addActionListener(this);
+		btnAddAttribute.addActionListener(this);
 	}
 	
-	// Will return true if file given is accessible and has .json extension.
+	// Will return true if file given is accessible and has a legal extension.
 	private boolean validateInput(File file) {
 		boolean ret = false;
 		String buf;
 		
-		buf = file.getAbsolutePath().substring(5);
+		buf = file.getAbsolutePath();
+		buf = buf.substring(buf.length() - 5);
 		
+		System.out.println(buf);
 		if ((buf.compareToIgnoreCase(FEXT) == 0) && (file.exists())) {
 			ret = true;
 		}
@@ -167,7 +187,7 @@ public class Gui extends JFrame implements ActionListener{
 		return ret;
 	}
 	
-	// True if file is accessible and has .json extension.
+	// True if file is accessible and has a legal extension.
 	private boolean validateInput(String file) {
 		return validateInput(new File(file));
 	}
@@ -187,26 +207,25 @@ public class Gui extends JFrame implements ActionListener{
 	
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		String event = e.getActionCommand();		
+		String event = e.getActionCommand();
+		String buf;
 		
 		if (event.equals("Import")) {
 			// Display an error if the file is bad, else open a file.
 			if (validateInput(fileAddress.getText()))
 				file.readFile(fileAddress.getText());
-			else JOptionPane.showMessageDialog(this, "File either doesn't exist or isn't a .JSON file!", 
+			else JOptionPane.showMessageDialog(this, "File either doesn't exist or isn't a " + FEXT +" file!", 
 					"Whoops!", JOptionPane.ERROR_MESSAGE);
 			
 		} else if (event.equals("Find")) {
-			// Display an error if the file is bad, else read from file.
-			if (validateInput(siteId.getText()))
+			// Display an error if the site is null, else display site info.
+			if (!siteId.getText().isEmpty())
 				siteOutput.setText(file.displaySite(siteId.getText()));
-			else JOptionPane.showMessageDialog(this, "Invalid file!", 
+			else JOptionPane.showMessageDialog(this, "Invalid site!", 
 					"Whoops!", JOptionPane.ERROR_MESSAGE);
 			
 		} else if (event.equals("Choose File")) {
-			// Choose a file through a dialogue to limit user error selecting files.
-			String buf;
-			
+			// Choose a file through a dialogue to limit user error selecting files.			
 			// Avoid a null pointer exception by checking whether a file was actually chosen.
 			if (fchDialogue.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
 				buf = fchDialogue.getSelectedFile().getAbsolutePath();
@@ -214,20 +233,43 @@ public class Gui extends JFrame implements ActionListener{
 			}
 			
 		} else if (event.equals("Open")) {
-			System.out.println("Needs to be linked with function");
+			// Open all sites by an ID silently
+			buf = siteId.getText();
+			if (!buf.isEmpty())
+				file.setSiteOpen(Integer.parseInt(buf));
 			
 		} else if (event.equals("Close")) {
-			System.out.println("Needs to be linked with function");
+			// Close all sites by an ID silently
+			buf = siteId.getText();
+			if (!buf.isEmpty())
+				file.setSiteClose(Integer.parseInt(buf));
 			
 		} else if (event.equals("Output")){
-			System.out.println("Needs to be linked with function");
+			// Will read a site's readings to the output box.
+			buf = siteId.getText();
+			if (!buf.isEmpty())
+				siteOutput.setText(file.displaySite(buf));
 			
 		} else if (event.equals("Choose Write File")) {
-			System.out.println("Not yet implemented.");
+			// Allow specifying a file to write by graphical dialogue
+			if (fchDialogue.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
+				buf = fchDialogue.getSelectedFile().getAbsolutePath();
+				txtWriteFileAddress.setText(buf);
+			}
 
 		} else if (event.equals("Export")) {
-			System.out.println("Not yet implemented.");
-
+			// Print out a file if the address is valid. Inform the user of results with a message.
+			buf = txtWriteFileAddress.getText();
+			if(file.writeFile(buf)) JOptionPane.showMessageDialog(this, "File written successfully.", 
+					"Success!", JOptionPane.INFORMATION_MESSAGE);
+			else JOptionPane.showMessageDialog(this, "File was not written successfully.", 
+					"Whoops!", JOptionPane.ERROR_MESSAGE);
+			
+		} else if (event.equals("Add Entry")) {
+			// Add an entry to the current file if site is open for recording.
+			file.addEntry(Integer.parseInt(txtSite.getText()), txtId.getText(),
+					cmbKey.getSelectedItem().toString(), Double.parseDouble(txtMeasurement.getText()),
+					(System.currentTimeMillis() / 1000));
 		}
 	}
 

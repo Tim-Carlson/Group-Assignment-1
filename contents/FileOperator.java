@@ -8,8 +8,6 @@ import java.util.Iterator;
 import org.json.simple.*;
 import org.json.simple.parser.*;
 
-
-
 public class FileOperator {
 	
 	private JSONParser parser;
@@ -27,6 +25,51 @@ public class FileOperator {
 		siteList = new ArrayList<Site>();
 	}
 
+	// Return true if the JSON file could be written.
+	public boolean writeFile(String location) {
+		boolean ret = true;
+		String sbuf = "";
+		File f = new File(location);
+
+		JSONObject jbuf;
+		Reading rbuf;
+		
+		int numReadings = 0;
+		
+		JSONObject report = new JSONObject();
+		JSONArray siteReadings = new JSONArray();
+		
+		for (int i = 0; i < siteList.size(); i++) {
+			for (int j = 0; j < siteList.get(i).size(); j++) {
+				siteReadings.add(new JSONObject());
+				jbuf = ((JSONObject) siteReadings.get(numReadings));
+				rbuf = siteList.get(i).getReading(j);
+				jbuf.put("site_id", siteList.get(i).getSite_id());
+				jbuf.put("reading_id", rbuf.getReading_id());
+				jbuf.put("reading_date", rbuf.getReading_date());
+				jbuf.put("reading_type", rbuf.getReading_type());
+				jbuf.put("reading_value", rbuf.getReading_value());
+				numReadings ++;
+			}
+		}
+		
+		report.put("site_readings", siteReadings);
+		sbuf = report.toJSONString();
+		
+		try {
+			f.getParentFile().mkdirs();
+			f.createNewFile();
+			PrintWriter pw = new PrintWriter(f);
+			pw.write(sbuf);
+			pw.flush();
+			pw.close();
+		} catch (Exception e) {
+			ret = false;
+			System.out.println("File error in File Operator.");
+		}
+		
+		return ret;
+	}
 	
 	public void readFile(String location) {
 		
@@ -84,6 +127,32 @@ public class FileOperator {
 		return newSite;
 	}
 	
+	// Sets site to open.
+	public void setSiteOpen(int siteId) {
+		int size = siteList.size();
+		for(int i = 0; i < size; i++) {
+			if(siteId == siteList.get(i).getSite_id())
+				 siteList.get(i).openCollection();	
+		}
+	}
+	
+	// Sets site to close.
+	public void setSiteClose(int siteId) {
+		int size = siteList.size();
+		for(int i = 0; i < size; i++) {
+			if(siteId == siteList.get(i).getSite_id())
+				 siteList.get(i).closeCollection();	
+		}
+	}
+	
+	// Will add a Reading to the specified site.
+	public void addEntry(int site, String id, String key, double val, long date) {
+		Site buf = findOrMakeSite(site);
+		if (buf.isCollection_open())
+			buf.addReading(val, "" + date, id, key);
+		else System.out.println("Site " + buf.getSite_id() + " is closed.");
+	}
+		
 	public String displaySite(String siteString) {
 		
 		int siteId = Integer.parseInt(siteString);
@@ -97,13 +166,4 @@ public class FileOperator {
 		
 		return null;
 	}
-	
-	public static void main(String[] args) {
-		Gui gui = new Gui();
-		gui.setVisible(true);
-		
-	}
-
-
-	
 }

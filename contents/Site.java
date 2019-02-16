@@ -21,6 +21,20 @@ public class Site {
 		return site_id;
 	}
 
+	// Return a reading.
+	public Reading getReading(int index) {
+		Reading ret = null;
+		if (index < readings.size())
+			ret = readings.get(index);
+		
+		return ret;
+	}
+	
+	// Return the number of readings in the Site
+	public int size() {
+		return readings.size();
+	}
+	
 	public boolean isCollection_open() {
 		return collection_open;
 	}
