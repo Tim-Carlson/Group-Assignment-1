@@ -1,0 +1,32 @@
+import java.util.LinkedList;
+/*
+ * The SiteCollection class is a collection class that help to store all sites 
+ * that has been created.
+ */
+public class SiteCollection {
+	private LinkedList<Site> siteList;
+	public SiteCollection() {
+		siteList = new LinkedList<>();
+	}
+	
+	public void addNewSite(Site site) {
+		siteList.add(site);
+
+	}
+	public void removeSite(String siteID) {
+		for(int i = 0; i< siteList.size(); i++) {
+			if(siteList.get(i).getSite_id().equals(siteID)) {
+				siteList.remove(i);
+			}
+		}
+	}
+	public Site getSite(String siteID) {
+	Site temp = null;
+		for(int i = 0; i< siteList.size(); i++) {
+			if(siteList.get(i).getSite_id().equals(siteID)) {
+				temp = siteList.get(i);
+			}
+		}
+	return temp;
+}
+}
