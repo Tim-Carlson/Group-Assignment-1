@@ -95,10 +95,10 @@ public class FileOperator {
 				readingId = String.valueOf(jReadings.get("reading_id"));
 				readingType = String.valueOf(jReadings.get("reading_type"));
 				
-				
-				sitePlaceholder = findOrMakeSite(siteId);
-				sitePlaceholder.addReading(readingValue, readingDate, readingId, readingType);
-			
+				if(isCollectionOpen(siteId)) {
+					sitePlaceholder = findOrMakeSite(siteId);
+					sitePlaceholder.addReading(readingValue, readingDate, readingId, readingType);
+				}
 			}
 			
 		} catch(FileNotFoundException e ) {
@@ -113,35 +113,43 @@ public class FileOperator {
 		
 	}
 	
-	private Site findOrMakeSite(int siteId) {//This returns a site with a matching site id, regardless of it previously existing
-		
+	private Site findSite(int siteId) {
 		int size = siteList.size();
 		for(int i = 0; i < size; i++) {
-			if(siteId == siteList.get(i).getSite_id())
-				return siteList.get(i);	
-			
+			if(siteId == siteList.get(i).getSite_id())return siteList.get(i);
 		}
+		return null;
+	}
+	
+	private Site findOrMakeSite(int siteId) {//This returns a site with a matching site id, regardless of it previously existing
 		
-		Site newSite = new Site(siteId);
-		siteList.add(newSite);
-		return newSite;
+		if(findSite(siteId) == null) {
+			Site newSite = new Site(siteId);
+			siteList.add(newSite);
+			return newSite;
+		} else return findSite(siteId);
+	}
+	
+	private boolean isCollectionOpen(int siteId) {//Defaults to true when site not found
+		if(findSite(siteId) == null) return true;
+		else return findSite(siteId).isCollection_open();
 	}
 	
 	// Sets site to open.
 	public void setSiteOpen(int siteId) {
-		int size = siteList.size();
-		for(int i = 0; i < size; i++) {
-			if(siteId == siteList.get(i).getSite_id())
-				 siteList.get(i).openCollection();	
+		if(findSite(siteId) == null) {
+			System.out.println("Site Id not Found");
+		} else {
+			findSite(siteId).openCollection();
 		}
 	}
 	
 	// Sets site to close.
 	public void setSiteClose(int siteId) {
-		int size = siteList.size();
-		for(int i = 0; i < size; i++) {
-			if(siteId == siteList.get(i).getSite_id())
-				 siteList.get(i).closeCollection();	
+		if(findSite(siteId) == null) {
+			System.out.println("Site Id not Found");
+		} else {
+			findSite(siteId).closeCollection();
 		}
 	}
 	

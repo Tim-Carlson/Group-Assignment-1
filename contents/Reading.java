@@ -48,8 +48,8 @@ public class Reading {
 
 	@Override
 	public String toString() {
-		return "reading_type=" + reading_type + "\nreading_value=" + reading_value + "\nreading_id="
-				+ reading_id + "\nreading_date=" + reading_date + "\n";
+		return "reading_type=   " + reading_type + "\nreading_value= " + reading_value + "\nreading_id=      "
+				+ reading_id + "\nreading_date=  " + reading_date + "\n";
 	}
 
 

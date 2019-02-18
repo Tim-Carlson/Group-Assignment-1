@@ -16,7 +16,9 @@ public class Gui extends JFrame implements ActionListener{
 	private JTabbedPane mainPane;
 	private JPanel readCard;
 	private JPanel viewCard;
+	private JPanel addReadingCard;
 	
+	private JScrollPane scroll;
 	private JTextArea fileAddress;
 	private JTextArea siteId;
 	private JTextArea siteOutput;
@@ -33,11 +35,11 @@ public class Gui extends JFrame implements ActionListener{
 	private JLabel idLabel;
 	
 	// Resources for the writeCard JPanel.
-	private JPanel writeCard, veryBottomWrite, subWriteBtm, subWriteMid, subWriteTop;
+	private JPanel writeCard, veryBottomWrite, subWriteBtm, subWriteTop;
 	private JLabel writeAddressLabel;
 	private JComboBox<String> cmbKey;
-	private JTextArea txtWriteFileAddress, txtId;
-	private JFormattedTextField txtMeasurement, txtSite;
+	private JTextArea txtWriteFileAddress;
+	private JFormattedTextField txtMeasurement, txtSite, txtId;
 	private JButton btnWriteFC, btnExport, btnAddAttribute;
 	
 	private JFileChooser fchDialogue;
@@ -66,13 +68,15 @@ public class Gui extends JFrame implements ActionListener{
 		readCard = new JPanel();
 		writeCard = new JPanel();
 		viewCard = new JPanel();
+		addReadingCard = new JPanel();
 		
 		fileAddress = new JTextArea(1, 20);
 		siteId = new JTextArea(1, 20);
 		siteOutput = new JTextArea(25, 50);
+		scroll = new JScrollPane(siteOutput);
 		
 		findAddress = new JButton("Import");
-		findId = new JButton("Find");
+		findId = new JButton("Find/Refresh");
 		btnReadFC = new JButton("Choose File");
 		
 		open = new JButton("Open");
@@ -100,10 +104,14 @@ public class Gui extends JFrame implements ActionListener{
 		
 		txtMeasurement = new JFormattedTextField(new NumberFormatter(new DecimalFormat("########.####")));
 		txtSite = new JFormattedTextField(new NumberFormatter(new DecimalFormat("######")));
-		txtId = new JTextArea(1,20);
+		txtId = new JFormattedTextField();
+		
+		txtMeasurement.setColumns(20);
+		txtSite.setColumns(20);
+		txtId.setColumns(20);
 		
 		subWriteBtm = new JPanel();
-		subWriteMid = new JPanel();
+		
 		subWriteTop = new JPanel();
 		subWriteBtm.setLayout(new GridLayout(2,1));
 		veryBottomWrite = new JPanel();
@@ -118,6 +126,7 @@ public class Gui extends JFrame implements ActionListener{
 		setResizable(false);
 		mainPane.add("Read File", readCard);
 		mainPane.add("Write File", writeCard);
+		mainPane.add("Add Reading", addReadingCard);
 		mainPane.add("View Site", viewCard);
 		this.add(mainPane);
 	}
@@ -132,19 +141,19 @@ public class Gui extends JFrame implements ActionListener{
 		viewCard.add(siteId);
 		viewCard.add(findId);
 		
-		viewCard.add(siteOutput);
+		viewCard.add(scroll);
 		viewCard.add(collectionLabel);
 		viewCard.add(open);
 		viewCard.add(close);
 		
+		veryBottomWrite.add(new JLabel("Site ID: "));
+		veryBottomWrite.add(txtSite);
 		veryBottomWrite.add(new JLabel("Reading ID: "));
 		veryBottomWrite.add(txtId);
-		veryBottomWrite.add(new JLabel("Type: "));
-		veryBottomWrite.add(cmbKey);
-		veryBottomWrite.add(new JLabel("Site: "));
-		veryBottomWrite.add(txtSite);
-		veryBottomWrite.add(new JLabel("Measurement:"));
+		veryBottomWrite.add(new JLabel("Reading Value: "));
 		veryBottomWrite.add(txtMeasurement);
+		veryBottomWrite.add(new JLabel("Reading Type: "));
+		veryBottomWrite.add(cmbKey);
 		veryBottomWrite.add(new JLabel());
 		veryBottomWrite.add(btnAddAttribute);
 		subWriteBtm.add(new JLabel());
@@ -154,10 +163,11 @@ public class Gui extends JFrame implements ActionListener{
 		subWriteTop.add(btnWriteFC);
 		subWriteTop.add(btnExport);
 		writeCard.add(subWriteTop);
-		writeCard.add(subWriteMid);
-		writeCard.add(subWriteBtm);
+		
+		addReadingCard.add(subWriteBtm);
 		
 		siteOutput.setEditable(false);
+		
 	}
 	
 	private void addListeners() {
@@ -217,7 +227,7 @@ public class Gui extends JFrame implements ActionListener{
 			else JOptionPane.showMessageDialog(this, "File either doesn't exist or isn't a " + FEXT +" file!", 
 					"Whoops!", JOptionPane.ERROR_MESSAGE);
 			
-		} else if (event.equals("Find")) {
+		} else if (event.equals("Find/Refresh")) {
 			// Display an error if the site is null, else display site info.
 			if (!siteId.getText().isEmpty())
 				siteOutput.setText(file.displaySite(siteId.getText()));
@@ -267,9 +277,15 @@ public class Gui extends JFrame implements ActionListener{
 			
 		} else if (event.equals("Add Entry")) {
 			// Add an entry to the current file if site is open for recording.
-			file.addEntry(Integer.parseInt(txtSite.getText()), txtId.getText(),
-					cmbKey.getSelectedItem().toString(), Double.parseDouble(txtMeasurement.getText()),
-					(System.currentTimeMillis() / 1000));
+			if(txtSite.getText().isEmpty() || txtId.getText().isEmpty() || txtMeasurement.getText().isEmpty()) {
+				JOptionPane.showMessageDialog(this, "At Least One Input Was Left Empty.", 
+						"Whoops!", JOptionPane.ERROR_MESSAGE);
+			} else { file.addEntry(Integer.parseInt(txtSite.getText()), txtId.getText(),
+				cmbKey.getSelectedItem().toString(), Double.parseDouble(txtMeasurement.getText()),
+				(System.currentTimeMillis() / 1000));
+				JOptionPane.showMessageDialog(this, "Reading Added Successfully.", 
+						"Success!", JOptionPane.INFORMATION_MESSAGE);
+			}
 		}
 	}
 

@@ -6,7 +6,7 @@ public class Site {
 
 	
 	private int site_id;
-	private boolean collection_open; //made default of == true, this does not currently prevent data entry when false
+	private boolean collection_open; //made default of == true
 	private ArrayList<Reading> readings;
 	
 	
@@ -54,13 +54,17 @@ public class Site {
 
 	@Override
 	public String toString() {
-		String output= "";
+		String openClose = "open";
+		String output = "";
+		
+		if(!collection_open) openClose = "closed";
+		
 		for(int i = 0; i< readings.size(); i++) {
 			output = output + readings.get(i) + "\n";
 
 		}
 
-		return output;
+		return output + "\nSite collection is " + openClose + " for siteId " + site_id;
 	
 	}
 	
