@@ -34,6 +34,11 @@ public class Study {
 	public void setStudyID(String studyID) {
 		this.studyID = studyID;
 	}
+	
+	public ArrayList<Site> getSiteList() {
+		return siteList;
+	}
+	
 	/**
 	 * Adds a Site object to the collection
 	 * @param site
@@ -53,14 +58,15 @@ public class Study {
 		}
 	}
 	
-	/**
-	 * 
-	 * @param siteID
-	 * @return a Site object.
-	 */
+	public int size() {
+		return siteList.size();
+	}
+	
 	public Site getSite(String siteID) {
 		Site temp = null;
-		for(int i = 0; i < siteList.size(); i++) {
+		int size = siteList.size();
+		
+		for(int i = 0; i < size; i++) {
 			if(siteList.get(i).getSite_id().equals(siteID)) {
 				temp = siteList.get(i);
 			}
@@ -68,7 +74,44 @@ public class Study {
 			
 			return temp;
 	}
-
+	/**
+	 * This returns a site with a matching site id, regardless of it previously existing
+	 * @param siteId
+	 * @return
+	 */
+	public Site getOrMakeSite(String siteId) {
+		
+		if(getSite(siteId) == null) {
+			Site newSite = new Site(siteId);
+			siteList.add(newSite);
+			return newSite;
+		} else return getSite(siteId);
+	}
+	
+	public boolean isCollectionOpen(String siteId) {//Defaults to true when site not found
+		if(getSite(siteId) == null) return true;
+		else return getSite(siteId).isCollection_open();
+	}
+	
+	// Sets site to open.
+	public void setSiteOpen(String siteId) {
+		if(getSite(siteId) == null) {
+			System.out.println("Site Id not Found");
+		} else {
+			getSite(siteId).openCollection();
+		}
+	}
+	
+	// Sets site to close.
+	public void setSiteClose(String siteId) {
+		if(getSite(siteId) == null) {
+			System.out.println("Site Id not Found");
+		} else {
+			getSite(siteId).closeCollection();
+		}
+	}
+	
+		
 	@Override
 	public boolean equals(Object obj) {
 		boolean result = false;
@@ -78,17 +121,19 @@ public class Study {
 				result = true;
 			}
 		}
+		
 		return  result;
 	}
 
 	public String toString() {
+		int size = siteList.size();
 		String output = "Study name: "+ nameOfStudy + "\nStudy ID: "+ studyID+ "\n";
+		
 		if (siteList != null) {
-			for (int i = 0; i < siteList.size(); i++) {
-				output = output + siteList.get(i) + "\n";
-
+			for (int i = 0; i < size; i++) {
+				output += siteList.get(i).toString() + "\n";
+				System.out.println("used twice");
 			}
-
 		}
 		return output;
 

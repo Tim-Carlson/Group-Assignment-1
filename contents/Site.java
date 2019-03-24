@@ -1,112 +1,76 @@
 package contents;
 
 import java.util.ArrayList;
-/**
- * A Site class is a collection class that hold a Reading objects. 
- *
- */
-public class Site {
-	private String site_id;
-	private boolean isCollection_open;
-	private ArrayList<Reading> readings;
 
+public class Site {
+
+	
+	private String site_id;
+	private boolean collection_open; //made default of == true
+	private ArrayList<Reading> readingList;
+	
+	
+	
 	public Site(String site_id) {
 		this.site_id = site_id;
-		this.isCollection_open = true;
-		readings = new ArrayList<Reading>();
-	}
-
-	public int size() {
-		return readings.size();
-	}
-
-	public boolean isCollection_open() {
-		return isCollection_open;
-	}
-
-	public void closeCollection() {
-		this.isCollection_open = false;
-	}
-
-	public void openCollection() {
-		this.isCollection_open = true;
+		this.collection_open = true;
+		readingList = new ArrayList<Reading>();
 	}
 
 	public String getSite_id() {
 		return site_id;
 	}
 
-	/**
-	 * 
-	 * @param readingID
-	 * @return a desired reading object.
-	 */
-	public Reading getReading(String readingID) {
-		Reading tempReading = null;
-		for (int i = 0; i < readings.size(); i++) {
-			if (readings.get(i).getReading_id().equals(readingID)) {
-				tempReading = readings.get(i);
-			}
-		}
-		return tempReading;
+	// Return a reading.
+	public Reading getReading(int index) {
+		Reading ret = null;
+		if (index < readingList.size())
+			ret = readingList.get(index);
+		
+		return ret;
+	}
+	
+
+	
+	// Return the number of readings in the Site
+	public int size() {
+		return readingList.size();
+	}
+	
+	public boolean isCollection_open() {
+		return collection_open;
 	}
 
-	/**
-	 * removes a reading for the collection.
-	 * 
-	 * @param readingID
-	 */
-	public void removeReading(String readingID) {
-
-		for (int i = 0; i < readings.size(); i++) {
-			if (readings.get(i).getReading_id().equals(readingID)) {
-				readings.remove(i);
-			}
-		}
-
+	public void closeCollection() {
+		this.collection_open = false;
 	}
-
-	/**
-	 * Adds a reading to the collection
-	 * 
-	 * @param reading
-	 */
-	public void addReading(Reading reading) {
-		if (isCollection_open) {
-			readings.add(reading);
-		} else {
-			System.out.println("Error: collection is closed");
-		}
-
+	
+	public void openCollection() {
+		this.collection_open = true;
 	}
-	/**
-	 * checks the equality of two site objects
-	 */
-	public boolean equals(Object obj) {
-		boolean temp = false;
-		if(obj instanceof Site) {
-			if(((Site) obj).getSite_id().equals(getSite_id())) {
-				temp = true;
-			}
-		}
-		return temp;
+	
+	public void addReading(String reading_value, String reading_date,
+			String reading_id, String reading_type) {
+		readingList.add(new Reading(reading_value, reading_date, reading_id, reading_type));
 	}
+	
 
 	@Override
 	public String toString() {
 		String openClose = "open";
 		String output = "";
-
-		if (!isCollection_open)
-			openClose = "closed";
-
-		for (int i = 0; i < readings.size(); i++) {
-			output = output + readings.get(i) + "\n";
-
+		int size = readingList.size();
+		
+		if(!collection_open) openClose = "closed";
+		
+		for (int i = 0; i < size; i++) {
+			output = output + readingList.get(i).toString() + "\n";
 		}
 
-		return output + "\nSite collection is " + openClose + " for siteId " + site_id;
-
+		return output + "\tSite collection is " + openClose + " for siteId " + site_id+ "\n\n";
+	
 	}
-
+	
+	
+	
 }

@@ -11,7 +11,7 @@ import javax.swing.text.NumberFormatter;
 @SuppressWarnings("serial")
 public class Gui extends JFrame implements ActionListener{
 	
-	private FileOperator file;
+	private Controller control;
 	
 	private JTabbedPane mainPane;
 	private JPanel readCard;
@@ -47,11 +47,6 @@ public class Gui extends JFrame implements ActionListener{
 	// The legal file extension.
 	private static final String FEXT = ".JSON";
 	
-	// Program needed an entry point.
-	public static void main(String args[]) {
-		Gui gui = new Gui();
-		gui.setVisible(true);
-	}
 	
 	public Gui(){
 		super("Scientific Data");
@@ -63,7 +58,7 @@ public class Gui extends JFrame implements ActionListener{
 	}
 	
 	private void instantiate() {
-		file = new FileOperator();
+		control = new Controller();
 		mainPane = new JTabbedPane();
 		readCard = new JPanel();
 		writeCard = new JPanel();
@@ -222,15 +217,15 @@ public class Gui extends JFrame implements ActionListener{
 		
 		if (event.equals("Import")) {
 			// Display an error if the file is bad, else open a file.
-			if (validateInput(fileAddress.getText()))
-				file.readFile(fileAddress.getText());
+			if (validateInput(fileAddress.getText())) 
+				control.readJson(fileAddress.getText());
 			else JOptionPane.showMessageDialog(this, "File either doesn't exist or isn't a " + FEXT +" file!", 
 					"Whoops!", JOptionPane.ERROR_MESSAGE);
 			
 		} else if (event.equals("Find/Refresh")) {
 			// Display an error if the site is null, else display site info.
 			if (!siteId.getText().isEmpty())
-				siteOutput.setText(file.displaySite(siteId.getText()));
+				siteOutput.setText(control.displaySite(siteId.getText()));
 			else JOptionPane.showMessageDialog(this, "Invalid site!", 
 					"Whoops!", JOptionPane.ERROR_MESSAGE);
 			
@@ -246,19 +241,19 @@ public class Gui extends JFrame implements ActionListener{
 			// Open all sites by an ID silently
 			buf = siteId.getText();
 			if (!buf.isEmpty())
-				file.setSiteOpen(Integer.parseInt(buf));
+				control.setSiteOpen(buf);
 			
 		} else if (event.equals("Close")) {
 			// Close all sites by an ID silently
 			buf = siteId.getText();
 			if (!buf.isEmpty())
-				file.setSiteClose(Integer.parseInt(buf));
+				control.setSiteClosed(buf);
 			
 		} else if (event.equals("Output")){
 			// Will read a site's readings to the output box.
 			buf = siteId.getText();
 			if (!buf.isEmpty())
-				siteOutput.setText(file.displaySite(buf));
+				siteOutput.setText(control.displaySite(buf));
 			
 		} else if (event.equals("Choose Write File")) {
 			// Allow specifying a file to write by graphical dialogue
@@ -270,7 +265,7 @@ public class Gui extends JFrame implements ActionListener{
 		} else if (event.equals("Export")) {
 			// Print out a file if the address is valid. Inform the user of results with a message.
 			buf = txtWriteFileAddress.getText();
-			if(file.writeFile(buf)) JOptionPane.showMessageDialog(this, "File written successfully.", 
+			if(control.writeJson(buf)) JOptionPane.showMessageDialog(this, "File written successfully.", 
 					"Success!", JOptionPane.INFORMATION_MESSAGE);
 			else JOptionPane.showMessageDialog(this, "File was not written successfully.", 
 					"Whoops!", JOptionPane.ERROR_MESSAGE);
@@ -280,9 +275,9 @@ public class Gui extends JFrame implements ActionListener{
 			if(txtSite.getText().isEmpty() || txtId.getText().isEmpty() || txtMeasurement.getText().isEmpty()) {
 				JOptionPane.showMessageDialog(this, "At Least One Input Was Left Empty.", 
 						"Whoops!", JOptionPane.ERROR_MESSAGE);
-			} else { file.addEntry(Integer.parseInt(txtSite.getText()), txtId.getText(),
-				cmbKey.getSelectedItem().toString(), Double.parseDouble(txtMeasurement.getText()),
-				(System.currentTimeMillis() / 1000));
+			} else { control.addEntry(txtSite.getText(), txtId.getText(),
+				cmbKey.getSelectedItem().toString(), txtMeasurement.getText(),
+				String.valueOf((System.currentTimeMillis() / 1000)));
 				JOptionPane.showMessageDialog(this, "Reading Added Successfully.", 
 						"Success!", JOptionPane.INFORMATION_MESSAGE);
 			}
