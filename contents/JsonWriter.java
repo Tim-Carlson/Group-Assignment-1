@@ -10,24 +10,27 @@ import org.json.simple.JSONObject;
 public class JsonWriter {
 
 	// Return true if the JSON file could be written.
-	
+
 	@SuppressWarnings("unchecked")
 	public boolean write(String location, ArrayList<Study> studyList) {
-		
+
 		boolean ret = true;
 		String sbuf = "";
 		int numReadings = 0;
-		
+
 		File f = new File(location);
 
 		JSONObject jbuf;
 		Reading rbuf;
-		
-		
+
 		JSONObject report = new JSONObject();
-		JSONArray siteReadings = new JSONArray();
-		
+		ArrayList<JSONObject> studyReadings = new ArrayList<JSONObject>();
+		JSONArray siteReadings;
+
+		// This section needs testing
 		for (int h = 0; h < studyList.size(); h++) {
+			studyReadings.add(new JSONObject());
+			siteReadings = new JSONArray();
 			for (int i = 0; i < studyList.get(h).size(); i++) {
 				for (int j = 0; j < studyList.get(h).getSiteList().get(i).size(); j++) {
 					siteReadings.add(new JSONObject());
@@ -38,13 +41,15 @@ public class JsonWriter {
 					jbuf.put("reading_date", rbuf.getReading_date());
 					jbuf.put("reading_type", rbuf.getReading_type());
 					jbuf.put("reading_value", rbuf.getReading_value());
-					numReadings ++;
+					numReadings++;
 				}
 			}
+			studyReadings.get(h).put("site_readings", siteReadings);
 		}
-		report.put("site_readings", siteReadings);
+		for (int h = 0; h < studyList.size(); h++)
+			report.put(studyList.get(h).getNameOfStudy(), studyReadings.get(h));
 		sbuf = report.toJSONString();
-		
+
 		try {
 			f.getParentFile().mkdirs();
 			f.createNewFile();
@@ -56,7 +61,7 @@ public class JsonWriter {
 			ret = false;
 			System.out.println("File error in File Operator.");
 		}
-		
+
 		return ret;
 	}
 }
