@@ -1,29 +1,14 @@
-
+package contents;
 /**
  * converts an XML file to string, and then takes any reading object it can find and adds it to the objects we have
  * 
  * @Robert
  * @version0.1
  */
-import java.lang.StringBuilder;
-import java.io.FileReader;
-import java.io.BufferedReader;
-import javax.swing.JFileChooser;
-import javax.swing.filechooser.FileNameExtensionFilter;
-import javax.swing.filechooser.FileFilter;
-import java.io.File;
+
   
 
 public class Feature3 {
-public static void main(String[] args)
-{
-       
-       Controller x=new Controller();
-       x.XMLImporter();
-       
-    }
-
-
 /**
  * Parameters: A string, alpha, that is a fragment of a XML file that covers an entire reading object.
  * 
