@@ -175,7 +175,7 @@ public class Controller {
                 {
                     Site Placeholder=Feature3.TurnToSite(brick);
                     
-                    siteIndex=studyIndex.getOrMakeSite(Placeholder.getSite_id());
+                    siteIndex=studyIndex.getOrMakeSite(Placeholder.getSite_id() + "(I)");
                     
                    
                 }
