@@ -1,10 +1,11 @@
+package contents.TestFolder;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.Test;
 
-import assignment_2.Reading;
-import assignment_2.Site;
+import contents.Reading;
+import contents.Site;
 
 class SiteTest {
 	Reading reading_1 = new Reading("10.0", "01/10/19", "A001", "Temp");

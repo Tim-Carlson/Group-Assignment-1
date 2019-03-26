@@ -24,6 +24,7 @@ public class Gui extends JFrame implements ActionListener{
 	private JTextArea siteOutput;
 	
 	private JButton findAddress;
+	private JButton XMLfindAddress;
 	private JButton findId;
 	private JButton btnReadFC;
 	
@@ -46,6 +47,7 @@ public class Gui extends JFrame implements ActionListener{
 	
 	// The legal file extension.
 	private static final String FEXT = ".JSON";
+	private static final String FEXT1 = ".XML";
 	
 	
 	public Gui(){
@@ -70,7 +72,8 @@ public class Gui extends JFrame implements ActionListener{
 		siteOutput = new JTextArea(25, 50);
 		scroll = new JScrollPane(siteOutput);
 		
-		findAddress = new JButton("Import");
+		findAddress = new JButton("JSON Import");
+		XMLfindAddress = new JButton("XML File Selection and Import");
 		findId = new JButton("Find/Refresh");
 		btnReadFC = new JButton("Choose File");
 		
@@ -131,6 +134,7 @@ public class Gui extends JFrame implements ActionListener{
 		readCard.add(fileAddress);
 		readCard.add(btnReadFC);
 		readCard.add(findAddress);
+		readCard.add(XMLfindAddress);
 		
 		viewCard.add(idLabel);
 		viewCard.add(siteId);
@@ -167,6 +171,7 @@ public class Gui extends JFrame implements ActionListener{
 	
 	private void addListeners() {
 		findAddress.addActionListener(this);
+		XMLfindAddress.addActionListener(this);
 		findId.addActionListener(this);
 		btnReadFC.addActionListener(this);
 		open.addActionListener(this);
@@ -185,7 +190,7 @@ public class Gui extends JFrame implements ActionListener{
 		buf = buf.substring(buf.length() - 5);
 		
 		System.out.println(buf);
-		if ((buf.compareToIgnoreCase(FEXT) == 0) && (file.exists())) {
+		if (((buf.compareToIgnoreCase(FEXT) == 0) && (file.exists()))||((buf.compareToIgnoreCase(FEXT1) == 0) && (file.exists()))) {
 			ret = true;
 		}
 		
@@ -215,14 +220,24 @@ public class Gui extends JFrame implements ActionListener{
 		String event = e.getActionCommand();
 		String buf;
 		
-		if (event.equals("Import")) {
+		if (event.equals("JSON Import")) {
 			// Display an error if the file is bad, else open a file.
-			if (validateInput(fileAddress.getText())) 
+			if (validateInput(fileAddress.getText()))
+			{	
 				control.readJson(fileAddress.getText());
-			else JOptionPane.showMessageDialog(this, "File either doesn't exist or isn't a " + FEXT +" file!", 
+			}
+				
+			else JOptionPane.showMessageDialog(this, "File either doesn't exist or isn't a " + FEXT + " file!", 
 					"Whoops!", JOptionPane.ERROR_MESSAGE);
 			
-		} else if (event.equals("Find/Refresh")) {
+		}
+		
+		else if(event.equals("XML File Selection and Import"))
+		{
+			control.XMLImporter();
+		}
+		
+		else if (event.equals("Find/Refresh")) {
 			// Display an error if the site is null, else display site info.
 			if (!siteId.getText().isEmpty())
 				siteOutput.setText(control.displaySite(siteId.getText()));
