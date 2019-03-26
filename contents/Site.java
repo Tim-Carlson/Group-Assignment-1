@@ -5,34 +5,36 @@ import java.util.ArrayList;
 public class Site {
 
 	
-	private int site_id;
+	private String site_id;
 	private boolean collection_open; //made default of == true
-	private ArrayList<Reading> readings;
+	private ArrayList<Reading> readingList;
 	
 	
 	
-	public Site(int site_id) {
+	public Site(String site_id) {
 		this.site_id = site_id;
 		this.collection_open = true;
-		readings = new ArrayList<Reading>();
+		readingList = new ArrayList<Reading>();
 	}
 
-	public int getSite_id() {
+	public String getSite_id() {
 		return site_id;
 	}
 
 	// Return a reading.
 	public Reading getReading(int index) {
 		Reading ret = null;
-		if (index < readings.size())
-			ret = readings.get(index);
+		if (index < readingList.size())
+			ret = readingList.get(index);
 		
 		return ret;
 	}
 	
+
+	
 	// Return the number of readings in the Site
 	public int size() {
-		return readings.size();
+		return readingList.size();
 	}
 	
 	public boolean isCollection_open() {
@@ -47,8 +49,9 @@ public class Site {
 		this.collection_open = true;
 	}
 	
-	public void addReading(double reading_value, String reading_date, String reading_id, String reading_type) {//This currently allows the addition of duplicates, creates a new object every call
-		readings.add(new Reading(reading_value, reading_date, reading_id, reading_type));
+	public void addReading(String reading_value, String reading_date,
+			String reading_id, String reading_type) {
+		readingList.add(new Reading(reading_value, reading_date, reading_id, reading_type));
 	}
 	
 
@@ -56,15 +59,15 @@ public class Site {
 	public String toString() {
 		String openClose = "open";
 		String output = "";
+		int size = readingList.size();
 		
 		if(!collection_open) openClose = "closed";
 		
-		for(int i = 0; i< readings.size(); i++) {
-			output = output + readings.get(i) + "\n";
-
+		for (int i = 0; i < size; i++) {
+			output = output + readingList.get(i).toString() + "\n";
 		}
 
-		return output + "\nSite collection is " + openClose + " for siteId " + site_id;
+		return output + "\tSite collection is " + openClose + " for siteId " + site_id+ "\n\n";
 	
 	}
 	
