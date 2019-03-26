@@ -16,7 +16,7 @@ public class JsonWriter {
 
 		boolean ret = true;
 		String sbuf = "";
-		int numReadings = 0;
+		int numReadings;
 
 		File f = new File(location);
 
@@ -32,6 +32,7 @@ public class JsonWriter {
 			studyReadings.add(new JSONObject());
 			siteReadings = new JSONArray();
 			for (int i = 0; i < studyList.get(h).size(); i++) {
+				numReadings = 0;
 				for (int j = 0; j < studyList.get(h).getSiteList().get(i).size(); j++) {
 					siteReadings.add(new JSONObject());
 					jbuf = ((JSONObject) siteReadings.get(numReadings));
@@ -51,12 +52,18 @@ public class JsonWriter {
 		sbuf = report.toJSONString();
 
 		try {
-			f.getParentFile().mkdirs();
+			
+			if (f.exists())
+				f.delete();
+			
 			f.createNewFile();
+
 			PrintWriter pw = new PrintWriter(f);
+
 			pw.write(sbuf);
 			pw.flush();
 			pw.close();
+
 		} catch (Exception e) {
 			ret = false;
 			System.out.println("File error in File Operator.");
