@@ -15,6 +15,7 @@ public class JsonReader {
 	@SuppressWarnings("unchecked")
 	public boolean read(String location, ArrayList<Study> studyPlaceholder) {
 		String siteId, readingValue, readingDate, readingId, readingType;
+		JSONObject jObj = null;
 		boolean ret = true;
 		int start, end;
 		LinkedList<String> studyNames = new LinkedList<String>();
@@ -22,11 +23,21 @@ public class JsonReader {
 		try {
 			// int i, studyPlaceholderIndex = -1;
 			Object obj = parser.parse(new FileReader(location));
-			JSONObject jObj = (JSONObject) obj;
+			jObj = (JSONObject) obj;
 
+		} catch (FileNotFoundException e) {
+			ret = false;
+
+		} catch (IOException e) {
+			ret = false;
+
+		} catch (ParseException e) {
+			ret = false;
+		}
+
+		if (ret) {
 			// Discover study names
 			String json = jObj.toString();
-			System.out.println(json);
 
 			// Study names will always be before the pattern: ":{"
 			for (int i = 0; i < json.length() - 3; i++) {
@@ -37,16 +48,13 @@ public class JsonReader {
 						start -= 1;
 						if (json.charAt(start) == '"') {
 							// get substring between start and end, and add it
-							// to studyNames, this is our study name
+							// to studyNames
 							studyNames.add(json.substring(start + 1, end));
 							start = -1;
 						}
 					}
 				}
 			}
-
-			for (String n : studyNames)
-				System.out.println(n);
 
 			for (int i = 0; i < studyNames.size(); i++) {
 				// Get the study object
@@ -86,7 +94,7 @@ public class JsonReader {
 			JSONArray siteArray = (JSONArray) jObj.get("site_readings");
 			if (siteArray != null) {
 				// If there are, do the same thing as above, but with
-				// notApplicable.
+				// notApplicable study.
 				studyPlaceholder
 						.add(new Study("notApplicable", "notApplicable"));
 				Iterator<String> siteScan = siteArray.iterator();
@@ -106,16 +114,7 @@ public class JsonReader {
 									readingDate, readingId, readingType);
 				}
 			}
-
-		} catch (FileNotFoundException e) {
-			ret = false;
-
-		} catch (IOException e) {
-			ret = false;
-
-		} catch (ParseException e) {
-			ret = false;
-		}
+		} 
 		return ret;
 	}
 }
