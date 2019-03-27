@@ -47,12 +47,23 @@ public class Controller {
         return writeJson(memoryLocation);
     }
 
+    public boolean deleteMemory()
+    {
+    	
+    	return true;
+    }
     public boolean readJson(String location) {
         return jRead.read(location, notApplicable);
     }
 
     public boolean writeJson(String location) {
         return jWrite.write(location, studyList);
+    }
+    
+    public boolean clearJson()
+    {
+    	
+    	return true;
     }
 
     public void addEntry(String site, String id, String key, String val, String date) {

@@ -1,6 +1,7 @@
 package contents;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 
@@ -58,5 +59,22 @@ public class JsonWriter {
 		}
 		
 		return ret;
+	}
+
+	public boolean erase(String location)
+	{
+		File targetFile = new File(location);
+		PrintWriter pw = null;
+		try {
+			pw = new PrintWriter(targetFile);
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return false;
+		}
+		
+		pw.write("");
+		pw.close();
+		return true;
 	}
 }

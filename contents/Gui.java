@@ -17,6 +17,7 @@ public class Gui extends JFrame implements ActionListener{
 	private JPanel readCard;
 	private JPanel viewCard;
 	private JPanel addReadingCard;
+	private JPanel manageMemoryCard;
 	
 	private JScrollPane scroll;
 	private JTextArea fileAddress;
@@ -34,6 +35,10 @@ public class Gui extends JFrame implements ActionListener{
 	private JLabel collectionLabel;
 	private JLabel readAddressLabel;
 	private JLabel idLabel;
+	
+	//Resources for manageMemoryCard JPanel.
+	private JButton btnSaveMemory;
+	private JButton btnDeleteMemory;
 	
 	// Resources for the writeCard JPanel.
 	private JPanel writeCard, veryBottomWrite, subWriteBtm, subWriteTop;
@@ -66,6 +71,7 @@ public class Gui extends JFrame implements ActionListener{
 		writeCard = new JPanel();
 		viewCard = new JPanel();
 		addReadingCard = new JPanel();
+		manageMemoryCard = new JPanel();
 		
 		fileAddress = new JTextArea(1, 20);
 		siteId = new JTextArea(1, 20);
@@ -89,6 +95,10 @@ public class Gui extends JFrame implements ActionListener{
 		collectionLabel = new JLabel("Site Collection:");
 		readAddressLabel = new JLabel("Enter File Address:");
 		idLabel = new JLabel("Enter Site ID:");
+		
+		btnSaveMemory = new JButton("Save Memory");
+		btnDeleteMemory = new JButton("Delete Memory");
+		
 		
 		// A FileChooser reduces the likelihood of user-error in selecting a file.
 		fchDialogue = new JFileChooser();
@@ -126,6 +136,7 @@ public class Gui extends JFrame implements ActionListener{
 		mainPane.add("Write File", writeCard);
 		mainPane.add("Add Reading", addReadingCard);
 		mainPane.add("View Site", viewCard);
+		mainPane.add("Manage Storage", manageMemoryCard);
 		this.add(mainPane);
 	}
 	
@@ -165,6 +176,9 @@ public class Gui extends JFrame implements ActionListener{
 		
 		addReadingCard.add(subWriteBtm);
 		
+		manageMemoryCard.add(btnSaveMemory);
+		manageMemoryCard.add(btnDeleteMemory);
+		
 		siteOutput.setEditable(false);
 		
 	}
@@ -179,6 +193,8 @@ public class Gui extends JFrame implements ActionListener{
 		btnExport.addActionListener(this);
 		btnWriteFC.addActionListener(this);
 		btnAddAttribute.addActionListener(this);
+		btnSaveMemory.addActionListener(this);
+		btnDeleteMemory.addActionListener(this);
 	}
 	
 	// Will return true if file given is accessible and has a legal extension.
@@ -296,6 +312,20 @@ public class Gui extends JFrame implements ActionListener{
 				JOptionPane.showMessageDialog(this, "Reading Added Successfully.", 
 						"Success!", JOptionPane.INFORMATION_MESSAGE);
 			}
+			
+		} else if(event.equals("Save Memory"))
+		{
+			if(control.saveToMemory())
+				JOptionPane.showMessageDialog(this, "Successfully saved your progress.", 
+					"Save Confirmation", JOptionPane.PLAIN_MESSAGE);
+			else
+				JOptionPane.showMessageDialog(this, "Failed to save your progress.", 
+						"SAVE FAILURE", JOptionPane.ERROR_MESSAGE);
+			
+		} else if(event.equals("Delete Memory"))
+		{
+			JOptionPane.showMessageDialog(this, "This isn't done yet.", 
+					"Whoops!", JOptionPane.ERROR_MESSAGE);
 		}
 	}
 
