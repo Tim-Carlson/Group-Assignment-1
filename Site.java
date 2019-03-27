@@ -1,4 +1,3 @@
-package contents;
 
 import java.util.ArrayList;
 public class Site {

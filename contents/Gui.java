@@ -17,6 +17,7 @@ public class Gui extends JFrame implements ActionListener{
 	private JPanel readCard;
 	private JPanel viewCard;
 	private JPanel addReadingCard;
+	private JPanel manageMemoryCard;
 	
 	private JScrollPane scroll;
 	private JTextArea fileAddress;
@@ -24,6 +25,7 @@ public class Gui extends JFrame implements ActionListener{
 	private JTextArea siteOutput;
 	
 	private JButton findAddress;
+	private JButton XMLfindAddress;
 	private JButton findId;
 	private JButton btnReadFC;
 	
@@ -33,6 +35,10 @@ public class Gui extends JFrame implements ActionListener{
 	private JLabel collectionLabel;
 	private JLabel readAddressLabel;
 	private JLabel idLabel;
+	
+	//Resources for manageMemoryCard JPanel.
+	private JButton btnSaveMemory;
+	private JButton btnDeleteMemory;
 	
 	// Resources for the writeCard JPanel.
 	private JPanel writeCard, veryBottomWrite, subWriteBtm, subWriteTop;
@@ -46,6 +52,7 @@ public class Gui extends JFrame implements ActionListener{
 	
 	// The legal file extension.
 	private static final String FEXT = ".JSON";
+	private static final String FEXT1 = ".XML";
 	
 	
 	public Gui(){
@@ -64,13 +71,15 @@ public class Gui extends JFrame implements ActionListener{
 		writeCard = new JPanel();
 		viewCard = new JPanel();
 		addReadingCard = new JPanel();
+		manageMemoryCard = new JPanel();
 		
 		fileAddress = new JTextArea(1, 20);
 		siteId = new JTextArea(1, 20);
 		siteOutput = new JTextArea(25, 50);
 		scroll = new JScrollPane(siteOutput);
 		
-		findAddress = new JButton("Import");
+		findAddress = new JButton("JSON Import");
+		XMLfindAddress = new JButton("XML File Selection and Import");
 		findId = new JButton("Find/Refresh");
 		btnReadFC = new JButton("Choose File");
 		
@@ -86,6 +95,10 @@ public class Gui extends JFrame implements ActionListener{
 		collectionLabel = new JLabel("Site Collection:");
 		readAddressLabel = new JLabel("Enter File Address:");
 		idLabel = new JLabel("Enter Site ID:");
+		
+		btnSaveMemory = new JButton("Save Memory");
+		btnDeleteMemory = new JButton("Delete Memory");
+		
 		
 		// A FileChooser reduces the likelihood of user-error in selecting a file.
 		fchDialogue = new JFileChooser();
@@ -123,6 +136,7 @@ public class Gui extends JFrame implements ActionListener{
 		mainPane.add("Write File", writeCard);
 		mainPane.add("Add Reading", addReadingCard);
 		mainPane.add("View Site", viewCard);
+		mainPane.add("Manage Storage", manageMemoryCard);
 		this.add(mainPane);
 	}
 	
@@ -131,6 +145,7 @@ public class Gui extends JFrame implements ActionListener{
 		readCard.add(fileAddress);
 		readCard.add(btnReadFC);
 		readCard.add(findAddress);
+		readCard.add(XMLfindAddress);
 		
 		viewCard.add(idLabel);
 		viewCard.add(siteId);
@@ -161,12 +176,16 @@ public class Gui extends JFrame implements ActionListener{
 		
 		addReadingCard.add(subWriteBtm);
 		
+		manageMemoryCard.add(btnSaveMemory);
+		manageMemoryCard.add(btnDeleteMemory);
+		
 		siteOutput.setEditable(false);
 		
 	}
 	
 	private void addListeners() {
 		findAddress.addActionListener(this);
+		XMLfindAddress.addActionListener(this);
 		findId.addActionListener(this);
 		btnReadFC.addActionListener(this);
 		open.addActionListener(this);
@@ -174,6 +193,8 @@ public class Gui extends JFrame implements ActionListener{
 		btnExport.addActionListener(this);
 		btnWriteFC.addActionListener(this);
 		btnAddAttribute.addActionListener(this);
+		btnSaveMemory.addActionListener(this);
+		btnDeleteMemory.addActionListener(this);
 	}
 	
 	// Will return true if file given is accessible and has a legal extension.
@@ -185,7 +206,7 @@ public class Gui extends JFrame implements ActionListener{
 		buf = buf.substring(buf.length() - 5);
 		
 		System.out.println(buf);
-		if ((buf.compareToIgnoreCase(FEXT) == 0) && (file.exists())) {
+		if (((buf.compareToIgnoreCase(FEXT) == 0) && (file.exists()))||((buf.compareToIgnoreCase(FEXT1) == 0) && (file.exists()))) {
 			ret = true;
 		}
 		
@@ -215,14 +236,24 @@ public class Gui extends JFrame implements ActionListener{
 		String event = e.getActionCommand();
 		String buf;
 		
-		if (event.equals("Import")) {
+		if (event.equals("JSON Import")) {
 			// Display an error if the file is bad, else open a file.
-			if (validateInput(fileAddress.getText())) 
+			if (validateInput(fileAddress.getText()))
+			{	
 				control.readJson(fileAddress.getText());
-			else JOptionPane.showMessageDialog(this, "File either doesn't exist or isn't a " + FEXT +" file!", 
+			}
+				
+			else JOptionPane.showMessageDialog(this, "File either doesn't exist or isn't a " + FEXT + " file!", 
 					"Whoops!", JOptionPane.ERROR_MESSAGE);
 			
-		} else if (event.equals("Find/Refresh")) {
+		}
+		
+		else if(event.equals("XML File Selection and Import"))
+		{
+			control.XMLImporter();
+		}
+		
+		else if (event.equals("Find/Refresh")) {
 			// Display an error if the site is null, else display site info.
 			if (!siteId.getText().isEmpty())
 				siteOutput.setText(control.displaySite(siteId.getText()));
@@ -281,6 +312,20 @@ public class Gui extends JFrame implements ActionListener{
 				JOptionPane.showMessageDialog(this, "Reading Added Successfully.", 
 						"Success!", JOptionPane.INFORMATION_MESSAGE);
 			}
+			
+		} else if(event.equals("Save Memory"))
+		{
+			if(control.saveToMemory())
+				JOptionPane.showMessageDialog(this, "Successfully saved your progress.", 
+					"Save Confirmation", JOptionPane.PLAIN_MESSAGE);
+			else
+				JOptionPane.showMessageDialog(this, "Failed to save your progress.", 
+						"SAVE FAILURE", JOptionPane.ERROR_MESSAGE);
+			
+		} else if(event.equals("Delete Memory"))
+		{
+			JOptionPane.showMessageDialog(this, "This isn't done yet.", 
+					"Whoops!", JOptionPane.ERROR_MESSAGE);
 		}
 	}
 

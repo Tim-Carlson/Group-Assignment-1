@@ -1,4 +1,3 @@
-package contents;
 
 import java.util.ArrayList;
 /**
@@ -12,7 +11,6 @@ import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.filechooser.FileFilter;
 import java.io.File;
-
 
 public class Controller {
 
@@ -28,8 +26,7 @@ public class Controller {
         studyList.add(notApplicable);
         jRead = new JsonReader();
         jWrite = new JsonWriter();
-        System.getProperty("user.dir");
-        memoryLocation = "./contents/memory.json";
+        memoryLocation = "./src/contents/memory.json";
         restoreMemory();
     }
 
@@ -47,23 +44,12 @@ public class Controller {
         return writeJson(memoryLocation);
     }
 
-    public boolean deleteMemory()
-    {
-    	
-    	return true;
-    }
     public boolean readJson(String location) {
         return jRead.read(location, notApplicable);
     }
 
     public boolean writeJson(String location) {
         return jWrite.write(location, studyList);
-    }
-    
-    public boolean clearJson()
-    {
-    	
-    	return true;
     }
 
     public void addEntry(String site, String id, String key, String val, String date) {
