@@ -1,3 +1,5 @@
+package contents.TestFolder;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.File;
@@ -5,9 +7,9 @@ import java.util.ArrayList;
 
 import org.junit.jupiter.api.Test;
 
-import assignment_2.JsonWriter;
-import assignment_2.Site;
-import assignment_2.Study;
+import contents.JsonWriter;
+import contents.Site;
+import contents.Study;
 
 class JsonWriterTest {
 	
@@ -31,10 +33,10 @@ class JsonWriterTest {
 		// writing a file to a Json format. address 
 		
 		// (PLEASE CHANGE THE FILE ADDRESS FIRST TO YOUR LOCAL COMPUTER TO RUN THE REST.)
-		writer.write(" c:⁨Users⁩\\fromssaolana\\Desktop\\test001.json⁩", studyList);
+		writer.write(" c:â�¨Usersâ�©\\fromssaolana\\Desktop\\test001.jsonâ�©", studyList);
 		
 		//checking if the file is written and exists. 
-		boolean result = new File(" c:⁨Users⁩\\fromssaolana\\Desktop\\test001.json⁩").isFile();
+		boolean result = new File(" c:â�¨Usersâ�©\\fromssaolana\\Desktop\\test001.jsonâ�©").isFile();
 		assertTrue(result);		
 		
 	}
