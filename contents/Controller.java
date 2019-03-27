@@ -53,7 +53,7 @@ public class Controller {
     	return true;
     }
     public boolean readJson(String location) {
-        return jRead.read(location, notApplicable);
+        return jRead.read(location, studyList);
     }
 
     public boolean writeJson(String location) {
