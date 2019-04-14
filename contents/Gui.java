@@ -25,7 +25,6 @@ public class Gui extends JFrame implements ActionListener{
 	private JTextArea siteOutput;
 	
 	private JButton findAddress;
-	private JButton XMLfindAddress;
 	private JButton findId;
 	private JButton btnReadFC;
 	
@@ -78,8 +77,8 @@ public class Gui extends JFrame implements ActionListener{
 		siteOutput = new JTextArea(25, 50);
 		scroll = new JScrollPane(siteOutput);
 		
-		findAddress = new JButton("JSON Import");
-		XMLfindAddress = new JButton("XML File Selection and Import");
+		findAddress = new JButton("Import");
+		
 		findId = new JButton("Find/Refresh");
 		btnReadFC = new JButton("Choose File");
 		
@@ -145,12 +144,10 @@ public class Gui extends JFrame implements ActionListener{
 		readCard.add(fileAddress);
 		readCard.add(btnReadFC);
 		readCard.add(findAddress);
-		readCard.add(XMLfindAddress);
 		
 		viewCard.add(idLabel);
 		viewCard.add(siteId);
 		viewCard.add(findId);
-		
 		viewCard.add(scroll);
 		viewCard.add(collectionLabel);
 		viewCard.add(open);
@@ -166,12 +163,14 @@ public class Gui extends JFrame implements ActionListener{
 		veryBottomWrite.add(cmbKey);
 		veryBottomWrite.add(new JLabel());
 		veryBottomWrite.add(btnAddAttribute);
+		
 		subWriteBtm.add(new JLabel());
 		subWriteBtm.add(veryBottomWrite);
 		subWriteTop.add(writeAddressLabel);
 		subWriteTop.add(txtWriteFileAddress);
 		subWriteTop.add(btnWriteFC);
 		subWriteTop.add(btnExport);
+		
 		writeCard.add(subWriteTop);
 		
 		addReadingCard.add(subWriteBtm);
@@ -185,7 +184,6 @@ public class Gui extends JFrame implements ActionListener{
 	
 	private void addListeners() {
 		findAddress.addActionListener(this);
-		XMLfindAddress.addActionListener(this);
 		findId.addActionListener(this);
 		btnReadFC.addActionListener(this);
 		open.addActionListener(this);
@@ -197,25 +195,23 @@ public class Gui extends JFrame implements ActionListener{
 		btnDeleteMemory.addActionListener(this);
 	}
 	
-	// Will return true if file given is accessible and has a legal extension.
-	private boolean validateInput(File file) {
-		boolean ret = false;
+	
+	private int validateFileType(File file) {
+		//filetype = 0 {not valid}
+		//filetype = 1 {.json}
+		//filetype = 2 {.XML}
+		int fileType = 0;
 		String buf;
 		
 		buf = file.getAbsolutePath();
-		buf = buf.substring(buf.length() - 5);
+		buf = buf.substring(buf.lastIndexOf('.'));
 		
 		System.out.println(buf);
-		if (((buf.compareToIgnoreCase(FEXT) == 0) && (file.exists()))||((buf.compareToIgnoreCase(FEXT1) == 0) && (file.exists()))) {
-			ret = true;
-		}
 		
-		return ret;
-	}
-	
-	// True if file is accessible and has a legal extension.
-	private boolean validateInput(String file) {
-		return validateInput(new File(file));
+		if (file.exists() && ((buf.compareToIgnoreCase(FEXT) == 0))) fileType = 1;
+		else if (file.exists() && (buf.compareToIgnoreCase(FEXT1) == 0)) fileType = 2;
+		
+		return fileType;
 	}
 	
 	public void setFileAddressText(String output) {
@@ -236,24 +232,23 @@ public class Gui extends JFrame implements ActionListener{
 		String event = e.getActionCommand();
 		String buf;
 		
-		if (event.equals("JSON Import")) {
-			// Display an error if the file is bad, else open a file.
-			if (validateInput(fileAddress.getText()))
-			{	
-				control.readJson(fileAddress.getText());
+		if (event.equals("Import")) {
+			int fileType = 0;
+			String fileAddressString = fileAddress.getText();
+			fileType = validateFileType(new File(fileAddressString));
+			
+			if (fileType == 1){	
+				control.readJson(fileAddressString);
+			} else if (fileType == 2) {
+				control.readXML(fileAddressString);
+			} else {
+				JOptionPane.showMessageDialog(this, "File either doesn't exist or isn't a " +
+						FEXT + " or " + FEXT1 + " file!", "Whoops!", JOptionPane.ERROR_MESSAGE);
 			}
 				
-			else JOptionPane.showMessageDialog(this, "File either doesn't exist or isn't a " + FEXT + " file!", 
-					"Whoops!", JOptionPane.ERROR_MESSAGE);
 			
-		}
-		
-		else if(event.equals("XML File Selection and Import"))
-		{
-			control.XMLImporter();
-		}
-		
-		else if (event.equals("Find/Refresh")) {
+			
+		} else if (event.equals("Find/Refresh")) {
 			// Display an error if the site is null, else display site info.
 			if (!siteId.getText().isEmpty())
 				siteOutput.setText(control.displaySite(siteId.getText()));
