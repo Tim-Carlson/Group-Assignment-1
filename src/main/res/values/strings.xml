@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">Scientific Study Data Manager</string>
+    <string name="tab_text_1">Read</string>
+    <string name="tab_text_2">Write</string>
+    <string name="tab_text_3">Add Reading</string>
+    <string name="tab_text_4">View</string>
+    <string name="tab_text_5">Undefined</string>
+</resources>
