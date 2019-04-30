@@ -1,25 +1,36 @@
 package com.example.groupassignment3.ui.main;
+import com.example.groupassignment3.MainActivity;
 
+
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+
 import android.support.annotation.Nullable;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
-import android.content.Intent;
+
+
 import com.example.groupassignment3.R;
 
 
 public class ReadFragment extends Fragment {
 
+    private MainActivity activity;
+
     private static final String ARG_SECTION_NUMBER = "section_number";
     private static final int INDEX = 1;
     private PageViewModel pageViewModel;
+
+    private Button search;
+    private TextView fileAddressRead;
 
     public static ReadFragment newInstance() {
         ReadFragment fragment = new ReadFragment();
@@ -29,9 +40,13 @@ public class ReadFragment extends Fragment {
         return fragment;
     }
 
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        activity = (MainActivity) getActivity();
+
+
         pageViewModel = ViewModelProviders.of(this).get(PageViewModel.class);
         int index = 1;
         if (getArguments() != null) {
@@ -40,31 +55,46 @@ public class ReadFragment extends Fragment {
         pageViewModel.setIndex(index);
 
 
+
+
     }
 
     @Override
     public View onCreateView(
             @NonNull LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
-        View root = inflater.inflate(R.layout.fragment_read, container, false);
-        final TextView textView = root.findViewById(R.id.section_label);
+        View v = inflater.inflate(R.layout.fragment_read, container, false);
+        final TextView textView = v.findViewById(R.id.section_label);
         pageViewModel.getText().observe(this, new Observer<String>() {
             @Override
             public void onChanged(@Nullable String s) {
                 textView.setText(s);
             }
         });
-        return root;
+        return v;
     }
 
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        Button button = getView().findViewById(R.id.doThingsButton);
-        button.setOnClickListener(new View.OnClickListener() {
+    public void onViewCreated(View v, @Nullable final Bundle savedInstanceState) {
+
+
+        search = v.findViewById(R.id.search);
+        fileAddressRead = v.findViewById(R.id.file_address_read);
+
+        search.setOnClickListener(new View.OnClickListener() {
+            @Override
             public void onClick(View v) {
+               activity.performSearch();
 
             }
         });
 
     }
+
+    public void setFileAddressRead(){
+        fileAddressRead.setText(activity.getFileAddress());
+    }
+
+
+
 }
