@@ -10,26 +10,29 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import com.example.groupassignment3.ui.main.SectionsPagerAdapter;
+import com.example.groupassignment3.ui.main.*;
 
 
 public class MainActivity extends AppCompatActivity {
 
     private static final int PERMISSION_REQUEST_WRITE = 0;
     private static final int READ_REQUEST_CODE = 42;
+    private SectionsPagerAdapter sectionsPagerAdapter;
     private boolean permissionGranted;
-    private String fileAddress;
+    private Bundle placeholderBundle;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         permissionGranted = true;
-        fileAddress = "";
+
         setContentView(R.layout.activity_main);
-        SectionsPagerAdapter sectionsPagerAdapter = new SectionsPagerAdapter(this, getSupportFragmentManager());
+        sectionsPagerAdapter = new SectionsPagerAdapter(this, getSupportFragmentManager());
         ViewPager viewPager = findViewById(R.id.view_pager);
         viewPager.setAdapter(sectionsPagerAdapter);
         TabLayout tabs = findViewById(R.id.tabs);
         tabs.setupWithViewPager(viewPager);
+
 
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
                 != PackageManager.PERMISSION_GRANTED) {
@@ -75,25 +78,29 @@ public class MainActivity extends AppCompatActivity {
             startActivityForResult(intent, READ_REQUEST_CODE);
 
         } else {System.out.println("Permissions not available for that command");}
+
     }
 
-    @Override
+
     public void onActivityResult(int requestCode, int resultCode, Intent resultData) {
         if (requestCode == READ_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
                 Uri uri;
                 if (resultData != null) {
                     uri = resultData.getData();
-                    System.out.println("did a thing");
-                    fileAddress = uri.getPath();
-
+                    sendStringToReadFragment(uri.getPath());
                 }
         }
 
     }
 
-    public String getFileAddress() {
-        return fileAddress;
+    private void sendStringToReadFragment(String fileLocation) {
+        placeholderBundle = new Bundle();
+        placeholderBundle.putString("fileLocation", fileLocation);
+        sectionsPagerAdapter.getReadFragment().setArguments(placeholderBundle);
+
     }
+
+
 
 
 }

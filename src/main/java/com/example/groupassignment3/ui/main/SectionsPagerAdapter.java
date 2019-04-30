@@ -18,6 +18,10 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
     @StringRes
     private static final int[] TAB_TITLES = new int[]{R.string.tab_text_1, R.string.tab_text_2,R.string.tab_text_3, R.string.tab_text_4};
     private final Context mContext;
+    private ReadFragment readFragment;
+    private WriteFragment writeFragment;
+    private AddReadingFragment addReadingFragment;
+    private ViewFragment viewFragment;
 
     public SectionsPagerAdapter(Context context, FragmentManager fm) {
         super(fm);
@@ -28,13 +32,13 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
     public Fragment getItem(int position) {
 
         if (position == 0) {
-            return ReadFragment.newInstance();
+            return readFragment = ReadFragment.newInstance();
         } else if (position == 1) {
-            return WriteFragment.newInstance();
+            return writeFragment = WriteFragment.newInstance();
         } else if (position == 2) {
-            return AddReadingFragment.newInstance();
+            return addReadingFragment = AddReadingFragment.newInstance();
         } else if (position == 3) {
-            return ViewFragment.newInstance();
+            return viewFragment = ViewFragment.newInstance();
         }
         return PlaceholderFragment.newInstance(5);
     }
@@ -49,5 +53,11 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
     public int getCount() {
         // Show 4 total pages.
         return 4;
+    }
+
+    public Fragment getReadFragment() {
+
+        return readFragment;
+
     }
 }

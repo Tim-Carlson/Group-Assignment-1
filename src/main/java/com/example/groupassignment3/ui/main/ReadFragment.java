@@ -3,6 +3,8 @@ import com.example.groupassignment3.MainActivity;
 
 
 import android.app.Activity;
+import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.MutableLiveData;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -24,7 +26,6 @@ import com.example.groupassignment3.R;
 public class ReadFragment extends Fragment {
 
     private MainActivity activity;
-
     private static final String ARG_SECTION_NUMBER = "section_number";
     private static final int INDEX = 1;
     private PageViewModel pageViewModel;
@@ -44,6 +45,7 @@ public class ReadFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         activity = (MainActivity) getActivity();
 
 
@@ -57,26 +59,29 @@ public class ReadFragment extends Fragment {
 
 
 
+
     }
 
     @Override
-    public View onCreateView(
-            @NonNull LayoutInflater inflater, ViewGroup container,
-            Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+
         View v = inflater.inflate(R.layout.fragment_read, container, false);
         final TextView textView = v.findViewById(R.id.section_label);
+
         pageViewModel.getText().observe(this, new Observer<String>() {
             @Override
             public void onChanged(@Nullable String s) {
                 textView.setText(s);
             }
         });
+
+
+
         return v;
     }
 
     @Override
     public void onViewCreated(View v, @Nullable final Bundle savedInstanceState) {
-
 
         search = v.findViewById(R.id.search);
         fileAddressRead = v.findViewById(R.id.file_address_read);
@@ -89,11 +94,10 @@ public class ReadFragment extends Fragment {
             }
         });
 
+
     }
 
-    public void setFileAddressRead(){
-        fileAddressRead.setText(activity.getFileAddress());
-    }
+
 
 
 
