@@ -94,10 +94,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void sendStringToReadFragment(String fileLocation) {
-        placeholderBundle = new Bundle();
-        placeholderBundle.putString("fileLocation", fileLocation);
-        sectionsPagerAdapter.getReadFragment().setArguments(placeholderBundle);
 
+        placeholderBundle = new Bundle();
+
+        placeholderBundle.putString("fileLocation", fileLocation);
+        placeholderBundle.putInt("section_number", 1);
+        //sectionsPagerAdapter.getReadFragment().setArguments(placeholderBundle);
+        //couldn't get this to work, tried using the original fragment instance, and a new one
     }
 
 

@@ -32,13 +32,17 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
     public Fragment getItem(int position) {
 
         if (position == 0) {
-            return readFragment = ReadFragment.newInstance();
+            readFragment = ReadFragment.newInstance();
+            return readFragment;
         } else if (position == 1) {
-            return writeFragment = WriteFragment.newInstance();
+            writeFragment = WriteFragment.newInstance();
+            return writeFragment;
         } else if (position == 2) {
-            return addReadingFragment = AddReadingFragment.newInstance();
+            addReadingFragment = AddReadingFragment.newInstance();
+            return addReadingFragment;
         } else if (position == 3) {
-            return viewFragment = ViewFragment.newInstance();
+            viewFragment = ViewFragment.newInstance();
+            return viewFragment;
         }
         return PlaceholderFragment.newInstance(5);
     }

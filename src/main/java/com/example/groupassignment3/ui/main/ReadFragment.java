@@ -1,18 +1,11 @@
 package com.example.groupassignment3.ui.main;
 import com.example.groupassignment3.MainActivity;
-
-
-import android.app.Activity;
-import android.arch.lifecycle.LiveData;
-import android.arch.lifecycle.MutableLiveData;
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
-
 import android.support.annotation.Nullable;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -51,8 +44,13 @@ public class ReadFragment extends Fragment {
 
         pageViewModel = ViewModelProviders.of(this).get(PageViewModel.class);
         int index = 1;
-        if (getArguments() != null) {
-            index = getArguments().getInt(ARG_SECTION_NUMBER);
+
+        if (getArguments() != null ) {
+                index = getArguments().getInt(ARG_SECTION_NUMBER);
+
+            if (getArguments().containsKey("fileLocation")) {
+                System.err.println("this happened!!");
+            }
         }
         pageViewModel.setIndex(index);
 
@@ -74,7 +72,8 @@ public class ReadFragment extends Fragment {
                 textView.setText(s);
             }
         });
-
+        search = v.findViewById(R.id.search);
+        fileAddressRead = v.findViewById(R.id.file_address_read);
 
 
         return v;
@@ -84,7 +83,6 @@ public class ReadFragment extends Fragment {
     public void onViewCreated(View v, @Nullable final Bundle savedInstanceState) {
 
         search = v.findViewById(R.id.search);
-        fileAddressRead = v.findViewById(R.id.file_address_read);
 
         search.setOnClickListener(new View.OnClickListener() {
             @Override
